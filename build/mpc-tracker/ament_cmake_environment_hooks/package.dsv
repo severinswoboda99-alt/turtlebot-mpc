@@ -1,0 +1,4 @@
+source;share/mpc-tracker/local_setup.bash
+source;share/mpc-tracker/local_setup.dsv
+source;share/mpc-tracker/local_setup.sh
+source;share/mpc-tracker/local_setup.zsh

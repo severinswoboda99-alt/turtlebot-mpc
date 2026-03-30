@@ -1,0 +1,6 @@
+Invoking command in '/home/swo/turtlebot-mpc/build/mpc-tracker': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake /home/swo/turtlebot-mpc/src/mpc-tracker -DCMAKE_INSTALL_PREFIX=/home/swo/turtlebot-mpc/install/mpc-tracker
+Invoked command in '/home/swo/turtlebot-mpc/build/mpc-tracker' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake /home/swo/turtlebot-mpc/src/mpc-tracker -DCMAKE_INSTALL_PREFIX=/home/swo/turtlebot-mpc/install/mpc-tracker
+Invoking command in '/home/swo/turtlebot-mpc/build/mpc-tracker': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --build /home/swo/turtlebot-mpc/build/mpc-tracker -- -j16 -l16
+Invoked command in '/home/swo/turtlebot-mpc/build/mpc-tracker' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --build /home/swo/turtlebot-mpc/build/mpc-tracker -- -j16 -l16
+Invoking command in '/home/swo/turtlebot-mpc/build/mpc-tracker': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --install /home/swo/turtlebot-mpc/build/mpc-tracker
+Invoked command in '/home/swo/turtlebot-mpc/build/mpc-tracker' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --install /home/swo/turtlebot-mpc/build/mpc-tracker
