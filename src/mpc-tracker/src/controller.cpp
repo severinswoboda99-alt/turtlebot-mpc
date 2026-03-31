@@ -30,9 +30,44 @@ double calc_placeholder(){
   return r;
 }
 
-Eigen::MatrixXd calc_hessian(Eigen::MatrixXd Q, Eigen::MatrixXd R, Eigen::MatrixXd P, double delta_t, double theta_ref[], double v_ref[], int N){
-  Eigen::MatrixXd H;
+Eigen::MatrixXd calc_A_stacked(double theta_ref[], double v_ref[], double delta_t, int N) {
 
+  // Calculate A matrices
+
+  // A_stacked is formed from the stacked Jacobi matrices
+  Eigen::MatrixXd A_stacked;
+  for (int i = 0; i < N; ++i) {
+    int offset = i * 3;
+    Eigen::Matrix<double,3,3> Interim = Eigen::Matrix::Identity(3,3);
+    for (int j = 0; j <= i; ++j) {
+      Interim = A[j] * Interim;
+    }
+    A_stacked.block(offset, 0, 3, 3) = Interim;
+  }
+  return A_stacked;
+}
+
+Eigen::MatrixXd calc_B_stacked(double theta_ref[], double v_ref[], double delta_t, int N) {
+
+  // Calculate B matrices
+
+  // B_stacked is a lower diagonal matrix
+  Eigen::MatrixXd B_stacked = Eigen::MatrixXd::Zero(3*N, 2*N);
+  for (int i = 0; i < N; ++i) {
+    for (int j = 0; j <= i; ++j) {
+      int offset_x = i * 3;
+      int offset_y = j * 2;
+      Eigen::Matrix<double,3,2> Interim = B[j];
+      for (int k = j + 1; k <= i; ++k) {
+        Interim = A[k] * Interim;
+      }
+      B_stacked.block(offset_x, offset_y, 3, 2) = Interim;
+    }
+  }
+  return B_stacked;
+}
+
+Eigen::MatrixXd calc_Q_bar(Eigen::MatrixXd Q, Eigen::MatrixXd P, int N) {
   // Q_bar is block-diagonal: [Q, Q, ..., P]
   Eigen::MatrixXd Q_bar = Eigen::MatrixXd::Zero(3*N, 3*N);
   for (int i = 0; i < N; ++i) {
@@ -45,25 +80,33 @@ Eigen::MatrixXd calc_hessian(Eigen::MatrixXd Q, Eigen::MatrixXd R, Eigen::Matrix
       Q_bar.block(offset, offset, 3, 3) = Q;
     }
   }
+  return Q_bar;
+}
 
+Eigen::MatrixXd calc_R_bar(Eigen::MatrixXd R, int N) {
   // R_bar is block-diagonal: [R, R, ..., R]
   Eigen::MatrixXd R_bar = Eigen::MatrixXd::Zero(2*N, 2*N);
   for (int i = 0; i < N; ++i) {
     int offset = i * 2;
     R_bar.block(offset, offset, 2, 2) = R;
   }
+  return R_bar;
+}
 
-  // A is formed from the stacked Jacobi matrices
-  Eigen::MatrixXd A_stacked;
-  for (int i = 0; i < N; ++i) {
-    int offset = i * 3;
-    for (int j = 0; j <= i; ++i) {
-      
-    }
-    A_stacked.block(offset, 0, 3, 3) = A[i];
-  }
-
+Eigen::MatrixXd calc_H(Eigen::MatrixXd Q_bar, Eigen::MatrixXd R_bar, Eigen::MatrixXd B_stacked) {
+  // Transpose B_stacked
+  Eigen::MatrixXd B_stacked_T = B_stacked.transpose();
+  // Calculate H
+  Eigen::MatrixXd H = 2 * (B_stacked_T * Q_bar * B_stacked + R_bar);
   return H;
+}
+
+Eigen::MatrixXd calc_f(Eigen::MatrixXd Q_bar, Eigen::MatrixXd A_stacked, Eigen::MatrixXd B_stacked, Eigen::MatrixXd delta_X_0) {
+  // Transpose B_stacked
+  Eigen::MatrixXd B_stacked_T = B_stacked.transpose();
+  // Calculate f
+  Eigen::MatrixXd f = 2 * B_stacked_T * Q_bar * A_stacked * delta_X_0;
+  return f;
 }
 
 // ROS2 Node for the motor controller
