@@ -138,11 +138,6 @@ Eigen::MatrixXd calc_u(double v_ref[], double w_ref[], int N) {
   }
 }
 
-double calc_placeholder(){
-  double r = 0;
-  return r;
-}
-
 class MPCNode : public rclcpp::Node {
 public:
   MPCNode() : rclcpp::Node("mpc_node") {
@@ -190,10 +185,9 @@ public:
     pub_ = this->create_publisher<geometry_msgs::msg::TwistStamped>("/cmd_vel", 10);
 
     timer_ = this->create_wall_timer(std::chrono::milliseconds(100), [this]() {
-      auto r = calc_placeholder();
       auto message = geometry_msgs::msg::TwistStamped();
-      message.twist.linear.x = r;
-      message.twist.angular.z = r;
+      message.twist.linear.x = 0;
+      message.twist.angular.z = 0;
       RCLCPP_INFO(this->get_logger(), "Publishing: linear.x=%.2f angular.z=%.2f",
                   message.twist.linear.x, message.twist.angular.z);
       pub_->publish(message);
