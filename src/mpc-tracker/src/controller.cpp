@@ -30,8 +30,39 @@ double calc_placeholder(){
   return r;
 }
 
-Eigen::Martrix<double,1,1> calc_hessian(Eigen::Martrix<double,1,1> Q, Eigen::Martrix<double,1,1> R, Eigen::Martrix<double,1,1> P, double delta_t, double theta_ref[], double v_ref[]){
-  Eigen::Martrix<double,1,1> H << 0, 0;
+Eigen::MatrixXd calc_hessian(Eigen::MatrixXd Q, Eigen::MatrixXd R, Eigen::MatrixXd P, double delta_t, double theta_ref[], double v_ref[], int N){
+  Eigen::MatrixXd H;
+
+  // Q_bar is block-diagonal: [Q, Q, ..., P]
+  Eigen::MatrixXd Q_bar = Eigen::MatrixXd::Zero(3*N, 3*N);
+  for (int i = 0; i < N; ++i) {
+    int offset = i * 3;
+    if (i == N - 1) {
+      // Last block is P
+      Q_bar.block(offset, offset, 3, 3) = P;
+    } else {
+      // All other blocks are Q
+      Q_bar.block(offset, offset, 3, 3) = Q;
+    }
+  }
+
+  // R_bar is block-diagonal: [R, R, ..., R]
+  Eigen::MatrixXd R_bar = Eigen::MatrixXd::Zero(2*N, 2*N);
+  for (int i = 0; i < N; ++i) {
+    int offset = i * 2;
+    R_bar.block(offset, offset, 2, 2) = R;
+  }
+
+  // A is formed from the stacked Jacobi matrices
+  Eigen::MatrixXd A_stacked;
+  for (int i = 0; i < N; ++i) {
+    int offset = i * 3;
+    for (int j = 0; j <= i; ++i) {
+      
+    }
+    A_stacked.block(offset, 0, 3, 3) = A[i];
+  }
+
   return H;
 }
 
@@ -70,7 +101,9 @@ public:
   }
 
 private:
-    double x, y, theta, delta_t;
+    double x, y, theta, 
+    double delta_t; // in ms?
+    int N; // prediction horizon size
     rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr sub_;
     rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr pub_;
     rclcpp::TimerBase::SharedPtr timer_;

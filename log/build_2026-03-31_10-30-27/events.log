@@ -1,0 +1,131 @@
+[0.000000] (-) TimerEvent: {}
+[0.000573] (mpc-tracker) JobQueued: {'identifier': 'mpc-tracker', 'dependencies': OrderedDict()}
+[0.000803] (mpc-tracker) JobStarted: {'identifier': 'mpc-tracker'}
+[0.007204] (mpc-tracker) JobProgress: {'identifier': 'mpc-tracker', 'progress': 'cmake'}
+[0.007979] (mpc-tracker) JobProgress: {'identifier': 'mpc-tracker', 'progress': 'build'}
+[0.009032] (mpc-tracker) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/swo/turtlebot-mpc/build/mpc-tracker', '--', '-j16', '-l16'], 'cwd': '/home/swo/turtlebot-mpc/build/mpc-tracker', 'env': OrderedDict({'PYTHON_BASIC_REPL': '1', 'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'swo', 'GIT_ASKPASS': '/home/swo/.vscode-server/bin/cfbea10c5ffb233ea9177d34726e6056e89913dc/extensions/git/dist/askpass.sh', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/x86_64-linux-gnu:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/home/swo', 'TERM_PROGRAM_VERSION': '1.113.0', 'VSCODE_IPC_HOOK_CLI': '/run/user/1000/vscode-ipc-f25590e9-276a-47db-b9f3-d4e04fc1252c.sock', 'ROS_PYTHON_VERSION': '3', 'VSCODE_GIT_ASKPASS_MAIN': '/home/swo/.vscode-server/bin/cfbea10c5ffb233ea9177d34726e6056e89913dc/extensions/git/dist/askpass-main.js', 'VSCODE_GIT_ASKPASS_NODE': '/home/swo/.vscode-server/bin/cfbea10c5ffb233ea9177d34726e6056e89913dc/node', 'PYDEVD_DISABLE_FILE_VALIDATION': '1', 'BUNDLED_DEBUGPY_PATH': '/home/swo/.vscode-server/extensions/ms-python.debugpy-2025.18.0-linux-x64/bundled/libs/debugpy', 'VSCODE_PYTHON_AUTOACTIVATE_GUARD': '1', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'WSL_DISTRO_NAME': 'Ubuntu-24.04', 'WAYLAND_DISPLAY': 'wayland-0', 'COLCON_PREFIX_PATH': '/home/swo/turtlebot-mpc/install', 'ROS_DISTRO': 'jazzy', 'LOGNAME': 'swo', 'NAME': 'DESKTOP-7H9OFNH', 'WSL_INTEROP': '/run/WSL/999_interop', 'PULSE_SERVER': 'unix:/mnt/wslg/PulseServer', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'TERM': 'xterm-256color', 'PATH': '/opt/ros/jazzy/bin:/home/swo/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/home/swo/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/home/swo/.vscode-server/bin/cfbea10c5ffb233ea9177d34726e6056e89913dc/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Users/sever/AppData/Local/Programs/Microsoft VS Code:/mnt/c/Python38/Scripts/:/mnt/c/Python38/:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files (x86)/Common Files/Oracle/Java/javapath:/mnt/c/Program Files (x86)/Razer Chroma SDK/bin:/mnt/c/Program Files/Razer Chroma SDK/bin:/mnt/c/Program Files (x86)/Razer/ChromaBroadcast/bin:/mnt/c/Program Files/Razer/ChromaBroadcast/bin:/mnt/c/windows/system32:/mnt/c/windows:/mnt/c/windows/System32/Wbem:/mnt/c/windows/System32/WindowsPowerShell/v1.0/:/mnt/c/windows/System32/OpenSSH/:/mnt/c/windows/system32/config/systemprofile/AppData/Local/Microsoft/WindowsApps:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/Microsoft SQL Server/Client SDK/ODBC/170/Tools/Binn/:/mnt/c/Program Files (x86)/Microsoft SQL Server/150/Tools/Binn/:/mnt/c/Program Files/Microsoft SQL Server/150/Tools/Binn/:/mnt/c/Program Files/Microsoft SQL Server/150/DTS/Binn/:/mnt/c/Program Files (x86)/Windows Kits/8.1/Windows Performance Toolkit/:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files/MATLAB/R2024b/bin:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR:/mnt/c/WINDOWS/system32/config/systemprofile/AppData/Local/Muse Hub/lib:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/Program Files/CMake/bin:/mnt/c/ProgramData/chocolatey/lib/cunit/lib:/mnt/c/ProgramData/chocolatey/lib/tinyxml2/lib:/mnt/c/ProgramData/chocolatey/lib/bullet/lib:/mnt/c/Program Files/Graphviz/bin:/mnt/c/Program Files/usbipd-win/:/mnt/c/Program Files/Docker/Docker/resources/bin:/mnt/c/Users/sever/AppData/Local/Microsoft/WindowsApps:/mnt/c/Program Files/OpenSSL-Win64/bin:/mnt/c/Program Files/OpenSSL-Win64/bin/:/mnt/c/opencv/x64/vc16/bin:/mnt/c/Program Files/CMake/bin:/mnt/c/xmllint/bin:/mnt/c/Users/sever/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/sever/AppData/Local/Python/bin:/mnt/c/Users/sever/AppData/Local/Muse Hub/lib:/snap/bin:/home/swo/.vscode-server/extensions/ms-python.debugpy-2025.18.0-linux-x64/bundled/scripts/noConfigScripts', 'XDG_RUNTIME_DIR': '/run/user/1000/', 'DISPLAY': ':0', 'VSCODE_DEBUGPY_ADAPTER_ENDPOINTS': '/home/swo/.vscode-server/extensions/ms-python.debugpy-2025.18.0-linux-x64/.noConfigDebugAdapterEndpoints/endpoint-8d4e8afb94f231e6.txt', 'LANG': 'en_US.UTF-8', 'PYTHONSTARTUP': '/home/swo/.vscode-server/data/User/workspaceStorage/b532f2b30e73528895c352e1ba808587/ms-python.python/pythonrc.py', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-73937e00d5.sock', 'TERM_PROGRAM': 'vscode', 'AMENT_PREFIX_PATH': '/home/swo/turtlebot-mpc/install/mpc-tracker:/opt/ros/jazzy', 'SHELL': '/bin/bash', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'PWD': '/home/swo/turtlebot-mpc/build/mpc-tracker', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/opt/ros/jazzy/lib/python3.12/site-packages', 'COLCON': '1', 'WSL2_GUI_APPS_ENABLED': '1', 'HOSTTYPE': 'x86_64', 'CMAKE_PREFIX_PATH': '/home/swo/turtlebot-mpc/install/mpc-tracker:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/opt/ros/jazzy', 'WSLENV': 'VSCODE_WSL_EXT_LOCATION/up'}), 'shell': False}
+[0.038248] (mpc-tracker) StdoutLine: {'line': b'-- Found ament_cmake: 2.5.4 (/opt/ros/jazzy/share/ament_cmake/cmake)\n'}
+[0.099545] (-) TimerEvent: {}
+[0.201293] (-) TimerEvent: {}
+[0.257548] (mpc-tracker) StdoutLine: {'line': b'-- Found rclcpp: 28.1.13 (/opt/ros/jazzy/share/rclcpp/cmake)\n'}
+[0.302204] (-) TimerEvent: {}
+[0.406433] (-) TimerEvent: {}
+[0.507006] (-) TimerEvent: {}
+[0.545131] (mpc-tracker) StdoutLine: {'line': b'-- Found rosidl_generator_c: 4.6.6 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)\n'}
+[0.558687] (mpc-tracker) StdoutLine: {'line': b'-- Found rosidl_generator_cpp: 4.6.6 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)\n'}
+[0.575816] (mpc-tracker) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[0.591868] (mpc-tracker) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[0.607308] (-) TimerEvent: {}
+[0.676712] (mpc-tracker) StdoutLine: {'line': b'-- Found rmw_implementation_cmake: 7.3.2 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)\n'}
+[0.678463] (mpc-tracker) StdoutLine: {'line': b'-- Found rmw_fastrtps_cpp: 8.4.3 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)\n'}
+[0.707450] (-) TimerEvent: {}
+[0.808092] (-) TimerEvent: {}
+[0.908616] (-) TimerEvent: {}
+[1.009551] (-) TimerEvent: {}
+[1.075908] (mpc-tracker) StdoutLine: {'line': b"-- Using RMW implementation 'rmw_fastrtps_cpp' as default\n"}
+[1.110454] (-) TimerEvent: {}
+[1.210898] (-) TimerEvent: {}
+[1.311471] (-) TimerEvent: {}
+[1.394125] (mpc-tracker) StdoutLine: {'line': b'-- Found nav_msgs: 5.3.6 (/opt/ros/jazzy/share/nav_msgs/cmake)\n'}
+[1.411936] (-) TimerEvent: {}
+[1.458326] (mpc-tracker) StdoutLine: {'line': b'-- Found eigen3_cmake_module: 0.3.0 (/opt/ros/jazzy/share/eigen3_cmake_module/cmake)\n'}
+[1.461490] (mpc-tracker) StdoutLine: {'line': b'-- Found ament_lint_auto: 0.17.3 (/opt/ros/jazzy/share/ament_lint_auto/cmake)\n'}
+[1.512713] (-) TimerEvent: {}
+[1.551856] (mpc-tracker) StdoutLine: {'line': b"-- Added test 'cppcheck' to perform static code analysis on C / C++ code\n"}
+[1.552048] (mpc-tracker) StdoutLine: {'line': b'-- Configured cppcheck include dirs: \n'}
+[1.552118] (mpc-tracker) StdoutLine: {'line': b'-- Configured cppcheck exclude dirs and/or files: \n'}
+[1.552471] (mpc-tracker) StdoutLine: {'line': b"-- Added test 'lint_cmake' to check CMake code style\n"}
+[1.553194] (mpc-tracker) StdoutLine: {'line': b"-- Added test 'uncrustify' to check C / C++ code style\n"}
+[1.553318] (mpc-tracker) StdoutLine: {'line': b'-- Configured uncrustify additional arguments: \n'}
+[1.553563] (mpc-tracker) StdoutLine: {'line': b"-- Added test 'xmllint' to check XML markup files\n"}
+[1.554368] (mpc-tracker) StdoutLine: {'line': b'-- Configuring done (1.5s)\n'}
+[1.565787] (mpc-tracker) StdoutLine: {'line': b'-- Generating done (0.0s)\n'}
+[1.571935] (mpc-tracker) StdoutLine: {'line': b'-- Build files have been written to: /home/swo/turtlebot-mpc/build/mpc-tracker\n'}
+[1.612926] (-) TimerEvent: {}
+[1.614532] (mpc-tracker) StdoutLine: {'line': b'[ 50%] \x1b[32mBuilding CXX object CMakeFiles/controller.dir/src/controller.cpp.o\x1b[0m\n'}
+[1.715549] (-) TimerEvent: {}
+[1.817431] (-) TimerEvent: {}
+[1.917971] (-) TimerEvent: {}
+[2.018476] (-) TimerEvent: {}
+[2.120036] (-) TimerEvent: {}
+[2.221343] (-) TimerEvent: {}
+[2.323104] (-) TimerEvent: {}
+[2.425192] (-) TimerEvent: {}
+[2.527309] (-) TimerEvent: {}
+[2.629258] (-) TimerEvent: {}
+[2.729819] (-) TimerEvent: {}
+[2.830271] (-) TimerEvent: {}
+[2.932356] (-) TimerEvent: {}
+[3.034306] (-) TimerEvent: {}
+[3.136974] (-) TimerEvent: {}
+[3.237684] (-) TimerEvent: {}
+[3.339017] (-) TimerEvent: {}
+[3.440861] (-) TimerEvent: {}
+[3.541488] (-) TimerEvent: {}
+[3.643017] (-) TimerEvent: {}
+[3.743338] (-) TimerEvent: {}
+[3.843682] (-) TimerEvent: {}
+[3.943971] (-) TimerEvent: {}
+[4.044340] (-) TimerEvent: {}
+[4.144938] (-) TimerEvent: {}
+[4.245284] (-) TimerEvent: {}
+[4.345686] (-) TimerEvent: {}
+[4.446071] (-) TimerEvent: {}
+[4.549681] (-) TimerEvent: {}
+[4.652379] (-) TimerEvent: {}
+[4.682661] (mpc-tracker) StderrLine: {'line': b'\x1b[01m\x1b[K/home/swo/turtlebot-mpc/src/mpc-tracker/src/controller.cpp:\x1b[m\x1b[K In function \xe2\x80\x98\x1b[01m\x1b[KEigen::Matrix<double, 1, 1, 0, 1, 1>\x1b[01;32m\x1b[K calc_hessian\x1b[m\x1b[K(Eigen::Matrix<double, 1, 1, 0, 1, 1>, Eigen::Matrix<double, 1, 1, 0, 1, 1>, Eigen::Matrix<double, 1, 1, 0, 1, 1>, double, double*, double*)\x1b[m\x1b[K\xe2\x80\x99:\n'}
+[4.683008] (mpc-tracker) StderrLine: {'line': b'\x1b[01m\x1b[K/home/swo/turtlebot-mpc/src/mpc-tracker/src/controller.cpp:34:31:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[Kexpected initializer before \xe2\x80\x98\x1b[01m\x1b[K<<\x1b[m\x1b[K\xe2\x80\x99 token\n'}
+[4.683201] (mpc-tracker) StderrLine: {'line': b'   34 |   Eigen::Matrix<double,1,1> H \x1b[01;31m\x1b[K<<\x1b[m\x1b[K 0, 0;\n'}
+[4.683291] (mpc-tracker) StderrLine: {'line': b'      |                               \x1b[01;31m\x1b[K^~\x1b[m\x1b[K\n'}
+[4.688311] (mpc-tracker) StderrLine: {'line': b'\x1b[01m\x1b[K/home/swo/turtlebot-mpc/src/mpc-tracker/src/controller.cpp:35:10:\x1b[m\x1b[K \x1b[01;31m\x1b[Kerror: \x1b[m\x1b[K\xe2\x80\x98\x1b[01m\x1b[KH\x1b[m\x1b[K\xe2\x80\x99 was not declared in this scope\n'}
+[4.688563] (mpc-tracker) StderrLine: {'line': b'   35 |   return \x1b[01;31m\x1b[KH\x1b[m\x1b[K;\n'}
+[4.688636] (mpc-tracker) StderrLine: {'line': b'      |          \x1b[01;31m\x1b[K^\x1b[m\x1b[K\n'}
+[4.688701] (mpc-tracker) StderrLine: {'line': b'\x1b[01m\x1b[K/home/swo/turtlebot-mpc/src/mpc-tracker/src/controller.cpp:33:66:\x1b[m\x1b[K \x1b[01;35m\x1b[Kwarning: \x1b[m\x1b[Kunused parameter \xe2\x80\x98\x1b[01m\x1b[KQ\x1b[m\x1b[K\xe2\x80\x99 [\x1b[01;35m\x1b[K\x1b]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-parameter\x07-Wunused-parameter\x1b]8;;\x07\x1b[m\x1b[K]\n'}
+[4.688809] (mpc-tracker) StderrLine: {'line': b'   33 | Eigen::Matrix<double,1,1> calc_hessian(\x1b[01;35m\x1b[KEigen::Matrix<double,1,1> Q\x1b[m\x1b[K, Eigen::Matrix<double,1,1> R, Eigen::Matrix<double,1,1> P, double delta_t, double theta_ref[], double v_ref[]){\n'}
+[4.688891] (mpc-tracker) StderrLine: {'line': b'      |                                        \x1b[01;35m\x1b[K~~~~~~~~~~~~~~~~~~~~~~~~~~^\x1b[m\x1b[K\n'}
+[4.688952] (mpc-tracker) StderrLine: {'line': b'\x1b[01m\x1b[K/home/swo/turtlebot-mpc/src/mpc-tracker/src/controller.cpp:33:95:\x1b[m\x1b[K \x1b[01;35m\x1b[Kwarning: \x1b[m\x1b[Kunused parameter \xe2\x80\x98\x1b[01m\x1b[KR\x1b[m\x1b[K\xe2\x80\x99 [\x1b[01;35m\x1b[K\x1b]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-parameter\x07-Wunused-parameter\x1b]8;;\x07\x1b[m\x1b[K]\n'}
+[4.689015] (mpc-tracker) StderrLine: {'line': b'   33 | Eigen::Matrix<double,1,1> calc_hessian(Eigen::Matrix<double,1,1> Q, \x1b[01;35m\x1b[KEigen::Matrix<double,1,1> R\x1b[m\x1b[K, Eigen::Matrix<double,1,1> P, double delta_t, double theta_ref[], double v_ref[]){\n'}
+[4.689075] (mpc-tracker) StderrLine: {'line': b'      |                                                                     \x1b[01;35m\x1b[K~~~~~~~~~~~~~~~~~~~~~~~~~~^\x1b[m\x1b[K\n'}
+[4.689135] (mpc-tracker) StderrLine: {'line': b'\x1b[01m\x1b[K/home/swo/turtlebot-mpc/src/mpc-tracker/src/controller.cpp:33:124:\x1b[m\x1b[K \x1b[01;35m\x1b[Kwarning: \x1b[m\x1b[Kunused parameter \xe2\x80\x98\x1b[01m\x1b[KP\x1b[m\x1b[K\xe2\x80\x99 [\x1b[01;35m\x1b[K\x1b]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-parameter\x07-Wunused-parameter\x1b]8;;\x07\x1b[m\x1b[K]\n'}
+[4.689205] (mpc-tracker) StderrLine: {'line': b'   33 | Eigen::Matrix<double,1,1> calc_hessian(Eigen::Matrix<double,1,1> Q, Eigen::Matrix<double,1,1> R, \x1b[01;35m\x1b[KEigen::Matrix<double,1,1> P\x1b[m\x1b[K, double delta_t, double theta_ref[], double v_ref[]){\n'}
+[4.689265] (mpc-tracker) StderrLine: {'line': b'      |                                                                                                  \x1b[01;35m\x1b[K~~~~~~~~~~~~~~~~~~~~~~~~~~^\x1b[m\x1b[K\n'}
+[4.689329] (mpc-tracker) StderrLine: {'line': b'\x1b[01m\x1b[K/home/swo/turtlebot-mpc/src/mpc-tracker/src/controller.cpp:33:134:\x1b[m\x1b[K \x1b[01;35m\x1b[Kwarning: \x1b[m\x1b[Kunused parameter \xe2\x80\x98\x1b[01m\x1b[Kdelta_t\x1b[m\x1b[K\xe2\x80\x99 [\x1b[01;35m\x1b[K\x1b]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-parameter\x07-Wunused-parameter\x1b]8;;\x07\x1b[m\x1b[K]\n'}
+[4.689392] (mpc-tracker) StderrLine: {'line': b'   33 | Eigen::Matrix<double,1,1> calc_hessian(Eigen::Matrix<double,1,1> Q, Eigen::Matrix<double,1,1> R, Eigen::Matrix<double,1,1> P, \x1b[01;35m\x1b[Kdouble delta_t\x1b[m\x1b[K, double theta_ref[], double v_ref[]){\n'}
+[4.689454] (mpc-tracker) StderrLine: {'line': b'      |                                                                                                                               \x1b[01;35m\x1b[K~~~~~~~^~~~~~~\x1b[m\x1b[K\n'}
+[4.689598] (mpc-tracker) StderrLine: {'line': b'\x1b[01m\x1b[K/home/swo/turtlebot-mpc/src/mpc-tracker/src/controller.cpp:33:150:\x1b[m\x1b[K \x1b[01;35m\x1b[Kwarning: \x1b[m\x1b[Kunused parameter \xe2\x80\x98\x1b[01m\x1b[Ktheta_ref\x1b[m\x1b[K\xe2\x80\x99 [\x1b[01;35m\x1b[K\x1b]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-parameter\x07-Wunused-parameter\x1b]8;;\x07\x1b[m\x1b[K]\n'}
+[4.689680] (mpc-tracker) StderrLine: {'line': b'   33 | Eigen::Matrix<double,1,1> calc_hessian(Eigen::Matrix<double,1,1> Q, Eigen::Matrix<double,1,1> R, Eigen::Matrix<double,1,1> P, double delta_t, \x1b[01;35m\x1b[Kdouble theta_ref[]\x1b[m\x1b[K, double v_ref[]){\n'}
+[4.689742] (mpc-tracker) StderrLine: {'line': b'      |                                                                                                                                               \x1b[01;35m\x1b[K~~~~~~~^~~~~~~~~~~\x1b[m\x1b[K\n'}
+[4.689826] (mpc-tracker) StderrLine: {'line': b'\x1b[01m\x1b[K/home/swo/turtlebot-mpc/src/mpc-tracker/src/controller.cpp:33:170:\x1b[m\x1b[K \x1b[01;35m\x1b[Kwarning: \x1b[m\x1b[Kunused parameter \xe2\x80\x98\x1b[01m\x1b[Kv_ref\x1b[m\x1b[K\xe2\x80\x99 [\x1b[01;35m\x1b[K\x1b]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wunused-parameter\x07-Wunused-parameter\x1b]8;;\x07\x1b[m\x1b[K]\n'}
+[4.689912] (mpc-tracker) StderrLine: {'line': b'   33 | le,1,1> calc_hessian(Eigen::Matrix<double,1,1> Q, Eigen::Matrix<double,1,1> R, Eigen::Matrix<double,1,1> P, double delta_t, double theta_ref[], \x1b[01;35m\x1b[Kdouble v_ref[]\x1b[m\x1b[K){\n'}
+[4.690008] (mpc-tracker) StderrLine: {'line': b'      |                                                                                                                                                 \x1b[01;35m\x1b[K~~~~~~~^~~~~~~\x1b[m\x1b[K\n'}
+[4.690072] (mpc-tracker) StderrLine: {'line': b'\n'}
+[4.754273] (-) TimerEvent: {}
+[4.855872] (-) TimerEvent: {}
+[4.958255] (-) TimerEvent: {}
+[5.060835] (-) TimerEvent: {}
+[5.162464] (-) TimerEvent: {}
+[5.264952] (-) TimerEvent: {}
+[5.367187] (-) TimerEvent: {}
+[5.469117] (-) TimerEvent: {}
+[5.571369] (-) TimerEvent: {}
+[5.673913] (-) TimerEvent: {}
+[5.776476] (-) TimerEvent: {}
+[5.878576] (-) TimerEvent: {}
+[5.980329] (-) TimerEvent: {}
+[6.082221] (-) TimerEvent: {}
+[6.184515] (-) TimerEvent: {}
+[6.286543] (-) TimerEvent: {}
+[6.388703] (-) TimerEvent: {}
+[6.490942] (-) TimerEvent: {}
+[6.593251] (-) TimerEvent: {}
+[6.695920] (-) TimerEvent: {}
+[6.797785] (-) TimerEvent: {}
+[6.899440] (-) TimerEvent: {}
+[7.001765] (-) TimerEvent: {}
+[7.103927] (-) TimerEvent: {}
+[7.155992] (mpc-tracker) StderrLine: {'line': b'gmake[2]: *** [CMakeFiles/controller.dir/build.make:76: CMakeFiles/controller.dir/src/controller.cpp.o] Error 1\n'}
+[7.156583] (mpc-tracker) StderrLine: {'line': b'gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/controller.dir/all] Error 2\n'}
+[7.156758] (mpc-tracker) StderrLine: {'line': b'gmake: *** [Makefile:146: all] Error 2\n'}
+[7.159656] (mpc-tracker) CommandEnded: {'returncode': 2}
+[7.170985] (mpc-tracker) JobEnded: {'identifier': 'mpc-tracker', 'rc': 2}
+[7.182079] (-) EventReactorShutdown: {}
