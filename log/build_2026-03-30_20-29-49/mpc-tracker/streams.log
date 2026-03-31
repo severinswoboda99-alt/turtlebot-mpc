@@ -1,0 +1,10 @@
+[0.011s] Invoking command in '/home/swo/turtlebot-mpc/build/mpc-tracker': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --build /home/swo/turtlebot-mpc/build/mpc-tracker -- -j16 -l16
+[0.069s] [ 50%] [32mBuilding CXX object CMakeFiles/controller.dir/src/controller.cpp.o[0m
+[0.170s] [01m[K/home/swo/turtlebot-mpc/src/mpc-tracker/src/controller.cpp:5:10:[m[K [01;31m[Kfatal error: [m[KEigen3: No such file or directory
+[0.170s]     5 | #include [01;31m[K<Eigen3>[m[K
+[0.170s]       |          [01;31m[K^~~~~~~~[m[K
+[0.170s] compilation terminated.
+[0.172s] gmake[2]: *** [CMakeFiles/controller.dir/build.make:76: CMakeFiles/controller.dir/src/controller.cpp.o] Error 1
+[0.172s] gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/controller.dir/all] Error 2
+[0.172s] gmake: *** [Makefile:146: all] Error 2
+[0.175s] Invoked command in '/home/swo/turtlebot-mpc/build/mpc-tracker' returned '2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --build /home/swo/turtlebot-mpc/build/mpc-tracker -- -j16 -l16

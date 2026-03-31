@@ -1,0 +1,25 @@
+[0.017s] Invoking command in '/home/swo/turtlebot-mpc/build/mpc-tracker': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --build /home/swo/turtlebot-mpc/build/mpc-tracker -- -j16 -l16
+[0.091s] [ 50%] [32mBuilding CXX object CMakeFiles/controller.dir/src/controller.cpp.o[0m
+[8.926s] [100%] [32m[1mLinking CXX executable controller[0m
+[9.536s] [100%] Built target controller
+[9.551s] Invoked command in '/home/swo/turtlebot-mpc/build/mpc-tracker' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --build /home/swo/turtlebot-mpc/build/mpc-tracker -- -j16 -l16
+[9.563s] Invoking command in '/home/swo/turtlebot-mpc/build/mpc-tracker': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --install /home/swo/turtlebot-mpc/build/mpc-tracker
+[9.573s] -- Install configuration: ""
+[9.576s] -- Installing: /home/swo/turtlebot-mpc/install/mpc-tracker/lib/mpc-tracker/controller
+[9.582s] -- Set non-toolchain portion of runtime path of "/home/swo/turtlebot-mpc/install/mpc-tracker/lib/mpc-tracker/controller" to ""
+[9.582s] -- Up-to-date: /home/swo/turtlebot-mpc/install/mpc-tracker/share/ament_index/resource_index/package_run_dependencies/mpc-tracker
+[9.582s] -- Up-to-date: /home/swo/turtlebot-mpc/install/mpc-tracker/share/ament_index/resource_index/parent_prefix_path/mpc-tracker
+[9.582s] -- Up-to-date: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/environment/ament_prefix_path.sh
+[9.583s] -- Up-to-date: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/environment/ament_prefix_path.dsv
+[9.583s] -- Up-to-date: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/environment/path.sh
+[9.583s] -- Up-to-date: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/environment/path.dsv
+[9.583s] -- Up-to-date: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/local_setup.bash
+[9.583s] -- Up-to-date: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/local_setup.sh
+[9.583s] -- Up-to-date: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/local_setup.zsh
+[9.583s] -- Up-to-date: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/local_setup.dsv
+[9.583s] -- Installing: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/package.dsv
+[9.583s] -- Up-to-date: /home/swo/turtlebot-mpc/install/mpc-tracker/share/ament_index/resource_index/packages/mpc-tracker
+[9.584s] -- Up-to-date: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/cmake/mpc-trackerConfig.cmake
+[9.584s] -- Up-to-date: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/cmake/mpc-trackerConfig-version.cmake
+[9.584s] -- Up-to-date: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/package.xml
+[9.586s] Invoked command in '/home/swo/turtlebot-mpc/build/mpc-tracker' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --install /home/swo/turtlebot-mpc/build/mpc-tracker

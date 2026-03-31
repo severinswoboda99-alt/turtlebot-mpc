@@ -1,0 +1,23 @@
+[0.019s] Invoking command in '/home/swo/turtlebot-mpc/build/mpc-tracker': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --build /home/swo/turtlebot-mpc/build/mpc-tracker -- -j16 -l16
+[0.221s] [ 50%] [32mBuilding CXX object CMakeFiles/controller.dir/src/controller.cpp.o[0m
+[3.572s] [01m[K/home/swo/turtlebot-mpc/src/mpc-tracker/src/controller.cpp:25:25:[m[K [01;31m[Kerror: [m[Kexpected unqualified-id before ‘[01m[K{[m[K’ token
+[3.572s]    25 | auto calc_placeholder();[01;31m[K{[m[K}
+[3.573s]       |                         [01;31m[K^[m[K
+[3.609s] [01m[K/home/swo/turtlebot-mpc/src/mpc-tracker/src/controller.cpp:[m[K In lambda function:
+[3.609s] [01m[K/home/swo/turtlebot-mpc/src/mpc-tracker/src/controller.cpp:34:13:[m[K [01;31m[Kerror: [m[K‘[01m[Kclass MPCNode[m[K’ has no member named ‘[01m[Kx[m[K’
+[3.609s]    34 |       this->[01;31m[Kx[m[K = msg.pose.pose.position.x;
+[3.609s]       |             [01;31m[K^[m[K
+[3.609s] [01m[K/home/swo/turtlebot-mpc/src/mpc-tracker/src/controller.cpp:35:13:[m[K [01;31m[Kerror: [m[K‘[01m[Kclass MPCNode[m[K’ has no member named ‘[01m[Ky[m[K’
+[3.609s]    35 |       this->[01;31m[Ky[m[K = msg.pose.pose.position.y;
+[3.609s]       |             [01;31m[K^[m[K
+[3.609s] [01m[K/home/swo/turtlebot-mpc/src/mpc-tracker/src/controller.cpp:40:13:[m[K [01;31m[Kerror: [m[K‘[01m[Kclass MPCNode[m[K’ has no member named ‘[01m[Ktheta[m[K’
+[3.609s]    40 |       this->[01;31m[Ktheta[m[K = std::atan2(2 * (qw * qz + qx * qy), 1 - 2 * (qy * qy + qz * qz)); // Conversion, quaternion to radian
+[3.609s]       |             [01;31m[K^~~~~[m[K
+[3.613s] [01m[K/home/swo/turtlebot-mpc/src/mpc-tracker/src/controller.cpp:[m[K In lambda function:
+[3.613s] [01m[K/home/swo/turtlebot-mpc/src/mpc-tracker/src/controller.cpp:49:32:[m[K [01;31m[Kerror: [m[Kuse of ‘[01m[Kauto[01;32m[K calc_placeholder[m[K()[m[K’ before deduction of ‘[01m[Kauto[m[K’
+[3.614s]    49 |       auto r = [01;31m[Kcalc_placeholder()[m[K;
+[3.614s]       |                [01;31m[K~~~~~~~~~~~~~~~~^~[m[K
+[6.273s] gmake[2]: *** [CMakeFiles/controller.dir/build.make:76: CMakeFiles/controller.dir/src/controller.cpp.o] Error 1
+[6.273s] gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/controller.dir/all] Error 2
+[6.273s] gmake: *** [Makefile:146: all] Error 2
+[6.277s] Invoked command in '/home/swo/turtlebot-mpc/build/mpc-tracker' returned '2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --build /home/swo/turtlebot-mpc/build/mpc-tracker -- -j16 -l16

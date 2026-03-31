@@ -1,0 +1,123 @@
+[0.000000] (-) TimerEvent: {}
+[0.000371] (mpc-tracker) JobQueued: {'identifier': 'mpc-tracker', 'dependencies': OrderedDict()}
+[0.000501] (mpc-tracker) JobStarted: {'identifier': 'mpc-tracker'}
+[0.006767] (mpc-tracker) JobProgress: {'identifier': 'mpc-tracker', 'progress': 'cmake'}
+[0.007342] (mpc-tracker) JobProgress: {'identifier': 'mpc-tracker', 'progress': 'build'}
+[0.008112] (mpc-tracker) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/swo/turtlebot-mpc/build/mpc-tracker', '--', '-j16', '-l16'], 'cwd': '/home/swo/turtlebot-mpc/build/mpc-tracker', 'env': OrderedDict({'PYTHON_BASIC_REPL': '1', 'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'swo', 'GIT_ASKPASS': '/home/swo/.vscode-server/bin/cfbea10c5ffb233ea9177d34726e6056e89913dc/extensions/git/dist/askpass.sh', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/x86_64-linux-gnu:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/home/swo', 'TERM_PROGRAM_VERSION': '1.113.0', 'VSCODE_IPC_HOOK_CLI': '/run/user/1000/vscode-ipc-107564a7-acbe-4729-8200-1da852f6f23a.sock', 'ROS_PYTHON_VERSION': '3', 'VSCODE_GIT_ASKPASS_MAIN': '/home/swo/.vscode-server/bin/cfbea10c5ffb233ea9177d34726e6056e89913dc/extensions/git/dist/askpass-main.js', 'VSCODE_GIT_ASKPASS_NODE': '/home/swo/.vscode-server/bin/cfbea10c5ffb233ea9177d34726e6056e89913dc/node', 'PYDEVD_DISABLE_FILE_VALIDATION': '1', 'BUNDLED_DEBUGPY_PATH': '/home/swo/.vscode-server/extensions/ms-python.debugpy-2025.18.0-linux-x64/bundled/libs/debugpy', 'VSCODE_PYTHON_AUTOACTIVATE_GUARD': '1', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'WSL_DISTRO_NAME': 'Ubuntu-24.04', 'WAYLAND_DISPLAY': 'wayland-0', 'COLCON_PREFIX_PATH': '/home/swo/turtlebot-mpc/install', 'ROS_DISTRO': 'jazzy', 'LOGNAME': 'swo', 'NAME': 'DESKTOP-7H9OFNH', 'WSL_INTEROP': '/run/WSL/1037_interop', 'PULSE_SERVER': 'unix:/mnt/wslg/PulseServer', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'TERM': 'xterm-256color', 'PATH': '/opt/ros/jazzy/bin:/home/swo/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/home/swo/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/home/swo/.vscode-server/bin/cfbea10c5ffb233ea9177d34726e6056e89913dc/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Users/sever/AppData/Local/Programs/Microsoft VS Code:/mnt/c/Python38/Scripts/:/mnt/c/Python38/:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files (x86)/Common Files/Oracle/Java/javapath:/mnt/c/Program Files (x86)/Razer Chroma SDK/bin:/mnt/c/Program Files/Razer Chroma SDK/bin:/mnt/c/Program Files (x86)/Razer/ChromaBroadcast/bin:/mnt/c/Program Files/Razer/ChromaBroadcast/bin:/mnt/c/windows/system32:/mnt/c/windows:/mnt/c/windows/System32/Wbem:/mnt/c/windows/System32/WindowsPowerShell/v1.0/:/mnt/c/windows/System32/OpenSSH/:/mnt/c/windows/system32/config/systemprofile/AppData/Local/Microsoft/WindowsApps:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/Microsoft SQL Server/Client SDK/ODBC/170/Tools/Binn/:/mnt/c/Program Files (x86)/Microsoft SQL Server/150/Tools/Binn/:/mnt/c/Program Files/Microsoft SQL Server/150/Tools/Binn/:/mnt/c/Program Files/Microsoft SQL Server/150/DTS/Binn/:/mnt/c/Program Files (x86)/Windows Kits/8.1/Windows Performance Toolkit/:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files/MATLAB/R2024b/bin:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR:/mnt/c/WINDOWS/system32/config/systemprofile/AppData/Local/Muse Hub/lib:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/Program Files/CMake/bin:/mnt/c/ProgramData/chocolatey/lib/cunit/lib:/mnt/c/ProgramData/chocolatey/lib/tinyxml2/lib:/mnt/c/ProgramData/chocolatey/lib/bullet/lib:/mnt/c/Program Files/Graphviz/bin:/mnt/c/Program Files/usbipd-win/:/mnt/c/Program Files/Docker/Docker/resources/bin:/mnt/c/Users/sever/AppData/Local/Microsoft/WindowsApps:/mnt/c/Program Files/OpenSSL-Win64/bin:/mnt/c/Program Files/OpenSSL-Win64/bin/:/mnt/c/opencv/x64/vc16/bin:/mnt/c/Program Files/CMake/bin:/mnt/c/xmllint/bin:/mnt/c/Users/sever/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/sever/AppData/Local/Python/bin:/mnt/c/Users/sever/AppData/Local/Muse Hub/lib:/snap/bin:/home/swo/.vscode-server/extensions/ms-python.debugpy-2025.18.0-linux-x64/bundled/scripts/noConfigScripts', 'XDG_RUNTIME_DIR': '/run/user/1000/', 'DISPLAY': ':0', 'VSCODE_DEBUGPY_ADAPTER_ENDPOINTS': '/home/swo/.vscode-server/extensions/ms-python.debugpy-2025.18.0-linux-x64/.noConfigDebugAdapterEndpoints/endpoint-8d4e8afb94f231e6.txt', 'LANG': 'en_US.UTF-8', 'PYTHONSTARTUP': '/home/swo/.vscode-server/data/User/workspaceStorage/b532f2b30e73528895c352e1ba808587/ms-python.python/pythonrc.py', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-73937e00d5.sock', 'TERM_PROGRAM': 'vscode', 'AMENT_PREFIX_PATH': '/home/swo/turtlebot-mpc/install/mpc-tracker:/opt/ros/jazzy', 'SHELL': '/bin/bash', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'PWD': '/home/swo/turtlebot-mpc/build/mpc-tracker', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/opt/ros/jazzy/lib/python3.12/site-packages', 'COLCON': '1', 'WSL2_GUI_APPS_ENABLED': '1', 'HOSTTYPE': 'x86_64', 'CMAKE_PREFIX_PATH': '/home/swo/turtlebot-mpc/install/mpc-tracker:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/opt/ros/jazzy', 'WSLENV': 'VSCODE_WSL_EXT_LOCATION/up'}), 'shell': False}
+[0.065245] (mpc-tracker) StdoutLine: {'line': b'[ 50%] \x1b[32mBuilding CXX object CMakeFiles/controller.dir/src/controller.cpp.o\x1b[0m\n'}
+[0.099407] (-) TimerEvent: {}
+[0.199830] (-) TimerEvent: {}
+[0.300230] (-) TimerEvent: {}
+[0.400629] (-) TimerEvent: {}
+[0.501042] (-) TimerEvent: {}
+[0.601475] (-) TimerEvent: {}
+[0.701898] (-) TimerEvent: {}
+[0.802343] (-) TimerEvent: {}
+[0.902855] (-) TimerEvent: {}
+[1.003244] (-) TimerEvent: {}
+[1.103760] (-) TimerEvent: {}
+[1.204072] (-) TimerEvent: {}
+[1.304484] (-) TimerEvent: {}
+[1.404819] (-) TimerEvent: {}
+[1.505152] (-) TimerEvent: {}
+[1.605497] (-) TimerEvent: {}
+[1.705902] (-) TimerEvent: {}
+[1.808982] (-) TimerEvent: {}
+[1.909962] (-) TimerEvent: {}
+[2.015910] (-) TimerEvent: {}
+[2.122492] (-) TimerEvent: {}
+[2.229125] (-) TimerEvent: {}
+[2.331270] (-) TimerEvent: {}
+[2.437299] (-) TimerEvent: {}
+[2.543730] (-) TimerEvent: {}
+[2.644334] (-) TimerEvent: {}
+[2.744897] (-) TimerEvent: {}
+[2.851364] (-) TimerEvent: {}
+[2.955220] (-) TimerEvent: {}
+[3.057863] (-) TimerEvent: {}
+[3.159564] (-) TimerEvent: {}
+[3.263736] (-) TimerEvent: {}
+[3.365018] (-) TimerEvent: {}
+[3.469162] (-) TimerEvent: {}
+[3.573441] (-) TimerEvent: {}
+[3.674315] (-) TimerEvent: {}
+[3.777111] (-) TimerEvent: {}
+[3.879429] (-) TimerEvent: {}
+[3.983818] (-) TimerEvent: {}
+[4.088325] (-) TimerEvent: {}
+[4.191540] (-) TimerEvent: {}
+[4.293520] (-) TimerEvent: {}
+[4.397092] (-) TimerEvent: {}
+[4.501245] (-) TimerEvent: {}
+[4.605396] (-) TimerEvent: {}
+[4.709876] (-) TimerEvent: {}
+[4.810210] (-) TimerEvent: {}
+[4.911038] (-) TimerEvent: {}
+[5.011516] (-) TimerEvent: {}
+[5.115880] (-) TimerEvent: {}
+[5.220388] (-) TimerEvent: {}
+[5.321093] (-) TimerEvent: {}
+[5.425681] (-) TimerEvent: {}
+[5.530121] (-) TimerEvent: {}
+[5.631179] (-) TimerEvent: {}
+[5.734975] (-) TimerEvent: {}
+[5.838808] (-) TimerEvent: {}
+[5.939584] (-) TimerEvent: {}
+[6.043987] (-) TimerEvent: {}
+[6.148313] (-) TimerEvent: {}
+[6.250284] (-) TimerEvent: {}
+[6.350830] (-) TimerEvent: {}
+[6.454234] (-) TimerEvent: {}
+[6.554615] (-) TimerEvent: {}
+[6.657708] (-) TimerEvent: {}
+[6.758381] (-) TimerEvent: {}
+[6.858758] (-) TimerEvent: {}
+[6.961341] (-) TimerEvent: {}
+[7.061789] (-) TimerEvent: {}
+[7.162139] (-) TimerEvent: {}
+[7.262428] (-) TimerEvent: {}
+[7.362744] (-) TimerEvent: {}
+[7.463067] (-) TimerEvent: {}
+[7.563418] (-) TimerEvent: {}
+[7.663736] (-) TimerEvent: {}
+[7.764054] (-) TimerEvent: {}
+[7.864377] (-) TimerEvent: {}
+[7.964807] (-) TimerEvent: {}
+[8.065303] (-) TimerEvent: {}
+[8.165889] (-) TimerEvent: {}
+[8.266336] (-) TimerEvent: {}
+[8.366811] (-) TimerEvent: {}
+[8.467128] (-) TimerEvent: {}
+[8.567587] (-) TimerEvent: {}
+[8.667908] (-) TimerEvent: {}
+[8.671993] (mpc-tracker) StdoutLine: {'line': b'[100%] \x1b[32m\x1b[1mLinking CXX executable controller\x1b[0m\n'}
+[8.768059] (-) TimerEvent: {}
+[8.868411] (-) TimerEvent: {}
+[8.968726] (-) TimerEvent: {}
+[9.069084] (-) TimerEvent: {}
+[9.077533] (mpc-tracker) StdoutLine: {'line': b'[100%] Built target controller\n'}
+[9.139874] (mpc-tracker) CommandEnded: {'returncode': 0}
+[9.141038] (mpc-tracker) JobProgress: {'identifier': 'mpc-tracker', 'progress': 'install'}
+[9.148917] (mpc-tracker) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/swo/turtlebot-mpc/build/mpc-tracker'], 'cwd': '/home/swo/turtlebot-mpc/build/mpc-tracker', 'env': OrderedDict({'PYTHON_BASIC_REPL': '1', 'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'swo', 'GIT_ASKPASS': '/home/swo/.vscode-server/bin/cfbea10c5ffb233ea9177d34726e6056e89913dc/extensions/git/dist/askpass.sh', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/x86_64-linux-gnu:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/home/swo', 'TERM_PROGRAM_VERSION': '1.113.0', 'VSCODE_IPC_HOOK_CLI': '/run/user/1000/vscode-ipc-107564a7-acbe-4729-8200-1da852f6f23a.sock', 'ROS_PYTHON_VERSION': '3', 'VSCODE_GIT_ASKPASS_MAIN': '/home/swo/.vscode-server/bin/cfbea10c5ffb233ea9177d34726e6056e89913dc/extensions/git/dist/askpass-main.js', 'VSCODE_GIT_ASKPASS_NODE': '/home/swo/.vscode-server/bin/cfbea10c5ffb233ea9177d34726e6056e89913dc/node', 'PYDEVD_DISABLE_FILE_VALIDATION': '1', 'BUNDLED_DEBUGPY_PATH': '/home/swo/.vscode-server/extensions/ms-python.debugpy-2025.18.0-linux-x64/bundled/libs/debugpy', 'VSCODE_PYTHON_AUTOACTIVATE_GUARD': '1', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'WSL_DISTRO_NAME': 'Ubuntu-24.04', 'WAYLAND_DISPLAY': 'wayland-0', 'COLCON_PREFIX_PATH': '/home/swo/turtlebot-mpc/install', 'ROS_DISTRO': 'jazzy', 'LOGNAME': 'swo', 'NAME': 'DESKTOP-7H9OFNH', 'WSL_INTEROP': '/run/WSL/1037_interop', 'PULSE_SERVER': 'unix:/mnt/wslg/PulseServer', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'TERM': 'xterm-256color', 'PATH': '/opt/ros/jazzy/bin:/home/swo/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/home/swo/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/home/swo/.vscode-server/bin/cfbea10c5ffb233ea9177d34726e6056e89913dc/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Users/sever/AppData/Local/Programs/Microsoft VS Code:/mnt/c/Python38/Scripts/:/mnt/c/Python38/:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files (x86)/Common Files/Oracle/Java/javapath:/mnt/c/Program Files (x86)/Razer Chroma SDK/bin:/mnt/c/Program Files/Razer Chroma SDK/bin:/mnt/c/Program Files (x86)/Razer/ChromaBroadcast/bin:/mnt/c/Program Files/Razer/ChromaBroadcast/bin:/mnt/c/windows/system32:/mnt/c/windows:/mnt/c/windows/System32/Wbem:/mnt/c/windows/System32/WindowsPowerShell/v1.0/:/mnt/c/windows/System32/OpenSSH/:/mnt/c/windows/system32/config/systemprofile/AppData/Local/Microsoft/WindowsApps:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/Microsoft SQL Server/Client SDK/ODBC/170/Tools/Binn/:/mnt/c/Program Files (x86)/Microsoft SQL Server/150/Tools/Binn/:/mnt/c/Program Files/Microsoft SQL Server/150/Tools/Binn/:/mnt/c/Program Files/Microsoft SQL Server/150/DTS/Binn/:/mnt/c/Program Files (x86)/Windows Kits/8.1/Windows Performance Toolkit/:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files/MATLAB/R2024b/bin:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR:/mnt/c/WINDOWS/system32/config/systemprofile/AppData/Local/Muse Hub/lib:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/Program Files/CMake/bin:/mnt/c/ProgramData/chocolatey/lib/cunit/lib:/mnt/c/ProgramData/chocolatey/lib/tinyxml2/lib:/mnt/c/ProgramData/chocolatey/lib/bullet/lib:/mnt/c/Program Files/Graphviz/bin:/mnt/c/Program Files/usbipd-win/:/mnt/c/Program Files/Docker/Docker/resources/bin:/mnt/c/Users/sever/AppData/Local/Microsoft/WindowsApps:/mnt/c/Program Files/OpenSSL-Win64/bin:/mnt/c/Program Files/OpenSSL-Win64/bin/:/mnt/c/opencv/x64/vc16/bin:/mnt/c/Program Files/CMake/bin:/mnt/c/xmllint/bin:/mnt/c/Users/sever/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/sever/AppData/Local/Python/bin:/mnt/c/Users/sever/AppData/Local/Muse Hub/lib:/snap/bin:/home/swo/.vscode-server/extensions/ms-python.debugpy-2025.18.0-linux-x64/bundled/scripts/noConfigScripts', 'XDG_RUNTIME_DIR': '/run/user/1000/', 'DISPLAY': ':0', 'VSCODE_DEBUGPY_ADAPTER_ENDPOINTS': '/home/swo/.vscode-server/extensions/ms-python.debugpy-2025.18.0-linux-x64/.noConfigDebugAdapterEndpoints/endpoint-8d4e8afb94f231e6.txt', 'LANG': 'en_US.UTF-8', 'PYTHONSTARTUP': '/home/swo/.vscode-server/data/User/workspaceStorage/b532f2b30e73528895c352e1ba808587/ms-python.python/pythonrc.py', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-73937e00d5.sock', 'TERM_PROGRAM': 'vscode', 'AMENT_PREFIX_PATH': '/home/swo/turtlebot-mpc/install/mpc-tracker:/opt/ros/jazzy', 'SHELL': '/bin/bash', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'PWD': '/home/swo/turtlebot-mpc/build/mpc-tracker', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/opt/ros/jazzy/lib/python3.12/site-packages', 'COLCON': '1', 'WSL2_GUI_APPS_ENABLED': '1', 'HOSTTYPE': 'x86_64', 'CMAKE_PREFIX_PATH': '/home/swo/turtlebot-mpc/install/mpc-tracker:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/opt/ros/jazzy', 'WSLENV': 'VSCODE_WSL_EXT_LOCATION/up'}), 'shell': False}
+[9.155648] (mpc-tracker) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[9.155979] (mpc-tracker) StdoutLine: {'line': b'-- Installing: /home/swo/turtlebot-mpc/install/mpc-tracker/lib/mpc-tracker/controller\n'}
+[9.160089] (mpc-tracker) StdoutLine: {'line': b'-- Set non-toolchain portion of runtime path of "/home/swo/turtlebot-mpc/install/mpc-tracker/lib/mpc-tracker/controller" to ""\n'}
+[9.160317] (mpc-tracker) StdoutLine: {'line': b'-- Up-to-date: /home/swo/turtlebot-mpc/install/mpc-tracker/share/ament_index/resource_index/package_run_dependencies/mpc-tracker\n'}
+[9.160578] (mpc-tracker) StdoutLine: {'line': b'-- Up-to-date: /home/swo/turtlebot-mpc/install/mpc-tracker/share/ament_index/resource_index/parent_prefix_path/mpc-tracker\n'}
+[9.160809] (mpc-tracker) StdoutLine: {'line': b'-- Up-to-date: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/environment/ament_prefix_path.sh\n'}
+[9.161120] (mpc-tracker) StdoutLine: {'line': b'-- Up-to-date: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/environment/ament_prefix_path.dsv\n'}
+[9.161308] (mpc-tracker) StdoutLine: {'line': b'-- Up-to-date: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/environment/path.sh\n'}
+[9.161676] (mpc-tracker) StdoutLine: {'line': b'-- Up-to-date: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/environment/path.dsv\n'}
+[9.161791] (mpc-tracker) StdoutLine: {'line': b'-- Up-to-date: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/local_setup.bash\n'}
+[9.161851] (mpc-tracker) StdoutLine: {'line': b'-- Up-to-date: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/local_setup.sh\n'}
+[9.161907] (mpc-tracker) StdoutLine: {'line': b'-- Up-to-date: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/local_setup.zsh\n'}
+[9.161962] (mpc-tracker) StdoutLine: {'line': b'-- Up-to-date: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/local_setup.dsv\n'}
+[9.162017] (mpc-tracker) StdoutLine: {'line': b'-- Installing: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/package.dsv\n'}
+[9.162072] (mpc-tracker) StdoutLine: {'line': b'-- Up-to-date: /home/swo/turtlebot-mpc/install/mpc-tracker/share/ament_index/resource_index/packages/mpc-tracker\n'}
+[9.162127] (mpc-tracker) StdoutLine: {'line': b'-- Up-to-date: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/cmake/mpc-trackerConfig.cmake\n'}
+[9.162182] (mpc-tracker) StdoutLine: {'line': b'-- Up-to-date: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/cmake/mpc-trackerConfig-version.cmake\n'}
+[9.162361] (mpc-tracker) StdoutLine: {'line': b'-- Up-to-date: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/package.xml\n'}
+[9.163638] (mpc-tracker) CommandEnded: {'returncode': 0}
+[9.169244] (-) TimerEvent: {}
+[9.179290] (mpc-tracker) JobEnded: {'identifier': 'mpc-tracker', 'rc': 0}
+[9.180827] (-) EventReactorShutdown: {}
