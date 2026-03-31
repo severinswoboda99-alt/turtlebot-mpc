@@ -25,11 +25,7 @@ using namespace std::chrono_literals;
 //   return alpha;
 // }
 
-double calc_placeholder(){
-  double r = 0;
-  return r;
-}
-
+// Calculate the stacked A matrices, using the reference trajectory data
 Eigen::MatrixXd calc_A_stacked(double theta_ref[], double v_ref[], double delta_t, int N) {
 
   // Calculate A matrices
@@ -47,6 +43,7 @@ Eigen::MatrixXd calc_A_stacked(double theta_ref[], double v_ref[], double delta_
   return A_stacked;
 }
 
+// Calculate the stacked B matrices, using the reference trajectory data
 Eigen::MatrixXd calc_B_stacked(double theta_ref[], double v_ref[], double delta_t, int N) {
 
   // Calculate B matrices
@@ -67,6 +64,7 @@ Eigen::MatrixXd calc_B_stacked(double theta_ref[], double v_ref[], double delta_
   return B_stacked;
 }
 
+// Calculate the block diagonal Q_bar matrix (last entry: P)
 Eigen::MatrixXd calc_Q_bar(Eigen::MatrixXd Q, Eigen::MatrixXd P, int N) {
   // Q_bar is block-diagonal: [Q, Q, ..., P]
   Eigen::MatrixXd Q_bar = Eigen::MatrixXd::Zero(3*N, 3*N);
@@ -83,6 +81,7 @@ Eigen::MatrixXd calc_Q_bar(Eigen::MatrixXd Q, Eigen::MatrixXd P, int N) {
   return Q_bar;
 }
 
+// Calculate the block diagonal R_bar matrix
 Eigen::MatrixXd calc_R_bar(Eigen::MatrixXd R, int N) {
   // R_bar is block-diagonal: [R, R, ..., R]
   Eigen::MatrixXd R_bar = Eigen::MatrixXd::Zero(2*N, 2*N);
@@ -93,6 +92,7 @@ Eigen::MatrixXd calc_R_bar(Eigen::MatrixXd R, int N) {
   return R_bar;
 }
 
+// Calculate the Hessian matrix H, used by OSQP
 Eigen::MatrixXd calc_H(Eigen::MatrixXd Q_bar, Eigen::MatrixXd R_bar, Eigen::MatrixXd B_stacked) {
   // Transpose B_stacked
   Eigen::MatrixXd B_stacked_T = B_stacked.transpose();
@@ -101,6 +101,7 @@ Eigen::MatrixXd calc_H(Eigen::MatrixXd Q_bar, Eigen::MatrixXd R_bar, Eigen::Matr
   return H;
 }
 
+// Calculate f, used by OSQP
 Eigen::MatrixXd calc_f(Eigen::MatrixXd Q_bar, Eigen::MatrixXd A_stacked, Eigen::MatrixXd B_stacked, Eigen::MatrixXd delta_X_0) {
   // Transpose B_stacked
   Eigen::MatrixXd B_stacked_T = B_stacked.transpose();
@@ -109,12 +110,30 @@ Eigen::MatrixXd calc_f(Eigen::MatrixXd Q_bar, Eigen::MatrixXd A_stacked, Eigen::
   return f;
 }
 
-// ROS2 Node for the motor controller
+double calc_placeholder(){
+  double r = 0;
+  return r;
+}
+
 class MPCNode : public rclcpp::Node {
 public:
   MPCNode() : rclcpp::Node("mpc_node") {
 
-    // Create Subscriber for current pose of TurtleBot
+    // Subscriber to reference trajectory
+
+    // Calculate A_stacked and B_stacked from reference trajectory data
+    Eigen::MatrixXd A_stacked = calc_A_stacked(this->theta_ref[], this->v_ref[], this->delta_t, this->N);
+    Eigen::MatrixXd B_stacked = calc_B_stacked(this->theta_ref[], this->v_ref[], this->delta_t, this->N);
+
+    // Calculate Q_bar and R_bar from tuning matrices Q, P, R
+    Eigen::MatrixXd Q_bar = calc_Q_bar(this->Q, this->P, this->N);
+    Eigen::MatrixXd R_bar = calc_R_bar(this->R, this->N);
+
+    // Calculate H and f from resulting matrices
+    Eigen::MatrixXd H = calc_H(this->Q_bar, this->R_bar, this->B_stacked);
+    Eigen::MatrixXd f = calc_f(this->Q_bar, this->A_stacked, this->B_stacked, this->delta_X_0);
+
+    // Subscriber to current pose of TurtleBot
     auto odom_callback = [this](const nav_msgs::msg::Odometry & msg){
       this->x = msg.pose.pose.position.x;
       this->y = msg.pose.pose.position.y;
@@ -126,8 +145,6 @@ public:
     };
     sub_ = this->create_subscription<nav_msgs::msg::Odometry>(
       "odom", 10, odom_callback);
-
-    
 
     // Create Publisher for the TurtleBot3 movement topic
     pub_ = this->create_publisher<geometry_msgs::msg::TwistStamped>("/cmd_vel", 10);
@@ -144,9 +161,12 @@ public:
   }
 
 private:
-    double x, y, theta, 
+    double x, y, theta;
+    double theta_ref[], double v_ref[];
     double delta_t; // in ms?
     int N; // prediction horizon size
+    Eigen::MatrixXd Q, P, R;
+
     rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr sub_;
     rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr pub_;
     rclcpp::TimerBase::SharedPtr timer_;
