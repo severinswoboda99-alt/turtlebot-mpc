@@ -27,14 +27,19 @@ using namespace std::chrono_literals;
 
 // Calculate the stacked A matrices, using the reference trajectory data
 Eigen::MatrixXd calc_A_stacked(double theta_ref[], double v_ref[], double delta_t, int N) {
-
   // Calculate A matrices
+  Eigen::Matrix<double,3,3> A[N];
+  for (int k = 0; k < N; ++k) {
+    A[k] << 1, 0, -v_ref[k] * sin(theta_ref[k]) * delta_t,
+            0, 1, v_ref[k] * cos(theta_ref[k]) * delta_t,
+            0, 0, 1;
+  }
 
   // A_stacked is formed from the stacked Jacobi matrices
   Eigen::MatrixXd A_stacked;
   for (int i = 0; i < N; ++i) {
     int offset = i * 3;
-    Eigen::Matrix<double,3,3> Interim = Eigen::Matrix::Identity(3,3);
+    Eigen::Matrix<double,3,3> Interim = Eigen::MatrixXd::Identity(3,3);
     for (int j = 0; j <= i; ++j) {
       Interim = A[j] * Interim;
     }
@@ -45,8 +50,13 @@ Eigen::MatrixXd calc_A_stacked(double theta_ref[], double v_ref[], double delta_
 
 // Calculate the stacked B matrices, using the reference trajectory data
 Eigen::MatrixXd calc_B_stacked(double theta_ref[], double v_ref[], double delta_t, int N) {
-
   // Calculate B matrices
+  Eigen::Matrix<double,3,2> B[N];
+  for (int k = 0; k < N; ++k) {
+    B[k] << cos(theta_ref[k]) * delta_t, 0,
+            sin(theta_ref[k]) * delta_t, 0,
+            0, delta_t;
+  }
 
   // B_stacked is a lower diagonal matrix
   Eigen::MatrixXd B_stacked = Eigen::MatrixXd::Zero(3*N, 2*N);
@@ -56,7 +66,7 @@ Eigen::MatrixXd calc_B_stacked(double theta_ref[], double v_ref[], double delta_
       int offset_y = j * 2;
       Eigen::Matrix<double,3,2> Interim = B[j];
       for (int k = j + 1; k <= i; ++k) {
-        Interim = A[k] * Interim;
+        Interim = B[k] * Interim;
       }
       B_stacked.block(offset_x, offset_y, 3, 2) = Interim;
     }
@@ -110,6 +120,24 @@ Eigen::MatrixXd calc_f(Eigen::MatrixXd Q_bar, Eigen::MatrixXd A_stacked, Eigen::
   return f;
 }
 
+// Calculate l and u, used as OSQP constraints
+Eigen::MatrixXd calc_l(double v_ref[], double w_ref[], int N) {
+  Eigen::MatrixXd l(2*N,1);
+  for (int i = 0; i <= i; ++i) {
+    int offset = i * 2;
+    l.block(offset, 0, 2, 1) << -0.22 - v_ref[i],
+                                -2.84 - w_ref[i];
+  }
+}
+Eigen::MatrixXd calc_u(double v_ref[], double w_ref[], int N) {
+  Eigen::MatrixXd u(2*N,1);
+  for (int i = 0; i <= i; ++i) {
+    int offset = i * 2;
+    u.block(offset, 0, 2, 1) << 0.22 - v_ref[i],
+                                2.84 - w_ref[i];
+  }
+}
+
 double calc_placeholder(){
   double r = 0;
   return r;
@@ -129,10 +157,6 @@ public:
     Eigen::MatrixXd Q_bar = calc_Q_bar(this->Q, this->P, this->N);
     Eigen::MatrixXd R_bar = calc_R_bar(this->R, this->N);
 
-    // Calculate H and f from resulting matrices
-    Eigen::MatrixXd H = calc_H(this->Q_bar, this->R_bar, this->B_stacked);
-    Eigen::MatrixXd f = calc_f(this->Q_bar, this->A_stacked, this->B_stacked, this->delta_X_0);
-
     // Subscriber to current pose of TurtleBot
     auto odom_callback = [this](const nav_msgs::msg::Odometry & msg){
       this->x = msg.pose.pose.position.x;
@@ -145,6 +169,22 @@ public:
     };
     sub_ = this->create_subscription<nav_msgs::msg::Odometry>(
       "odom", 10, odom_callback);
+    
+    // Calculate delta_X_0 from current state and reference
+    this->delta_X_0 <<  this->x - this->x_ref[0], 
+                        this->y - this->y_ref[0], 
+                        this->theta - this->theta_ref[0];
+    
+    // Calculate constraint vectors, for the form l <= A Delta_U <= u
+    Eigen::MatrixXd l = calc_l(this->v_ref[], this->w_ref[], this->N);
+    Eigen::MatrixXd u = calc_u(this->v_ref[], this->w_ref[], this->N);
+    Eigen::MatrixXd A = Eigen::Matrix::Identity(this->N*2,this->N*2);
+
+    // Calculate H and f from resulting matrices
+    Eigen::MatrixXd H = calc_H(this->Q_bar, this->R_bar, this->B_stacked);
+    Eigen::MatrixXd f = calc_f(this->Q_bar, this->A_stacked, this->B_stacked, this->delta_X_0);
+
+    // OSQP solver
 
     // Create Publisher for the TurtleBot3 movement topic
     pub_ = this->create_publisher<geometry_msgs::msg::TwistStamped>("/cmd_vel", 10);
@@ -162,10 +202,12 @@ public:
 
 private:
     double x, y, theta;
-    double theta_ref[], double v_ref[];
-    double delta_t; // in ms?
+    double x_ref[], y_ref[], theta_ref[];
+    double v_ref[], w_ref[];
+    double delta_t; // in s
     int N; // prediction horizon size
     Eigen::MatrixXd Q, P, R;
+    Eigen::MatrixXd delta_X_0;
 
     rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr sub_;
     rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr pub_;
