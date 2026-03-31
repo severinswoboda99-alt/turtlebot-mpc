@@ -1,9 +1,0 @@
-[0.015s] Invoking command in '/home/swo/turtlebot-mpc/build/mpc-tracker': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --build /home/swo/turtlebot-mpc/build/mpc-tracker -- -j16 -l16
-[0.093s] [ 50%] [32mBuilding CXX object CMakeFiles/controller.dir/src/controller.cpp.o[0m
-[3.017s] [01m[K/home/swo/turtlebot-mpc/src/mpc-tracker/src/controller.cpp:25:27:[m[K [01;31m[Kerror: [m[Kexpected unqualified-id before ‘[01m[K{[m[K’ token
-[3.017s]    25 | double calc_placeholder();[01;31m[K{[m[K
-[3.017s]       |                           [01;31m[K^[m[K
-[5.750s] gmake[2]: *** [CMakeFiles/controller.dir/build.make:76: CMakeFiles/controller.dir/src/controller.cpp.o] Error 1
-[5.750s] gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/controller.dir/all] Error 2
-[5.750s] gmake: *** [Makefile:146: all] Error 2
-[5.753s] Invoked command in '/home/swo/turtlebot-mpc/build/mpc-tracker' returned '2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --build /home/swo/turtlebot-mpc/build/mpc-tracker -- -j16 -l16
