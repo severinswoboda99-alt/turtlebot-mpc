@@ -1,6 +1,0 @@
-[01m[K/home/swo/turtlebot-mpc/src/mpc-tracker/src/controller.cpp:25:27:[m[K [01;31m[Kerror: [m[Kexpected unqualified-id before ‘[01m[K{[m[K’ token
-   25 | double calc_placeholder();[01;31m[K{[m[K
-      |                           [01;31m[K^[m[K
-gmake[2]: *** [CMakeFiles/controller.dir/build.make:76: CMakeFiles/controller.dir/src/controller.cpp.o] Error 1
-gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/controller.dir/all] Error 2
-gmake: *** [Makefile:146: all] Error 2
