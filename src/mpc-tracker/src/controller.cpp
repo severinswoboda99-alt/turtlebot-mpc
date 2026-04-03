@@ -9,6 +9,10 @@
 #include "rclcpp/rclcpp.hpp"
 #include "nav_msgs/msg/odometry.hpp"
 #include "geometry_msgs/msg/twist_stamped.hpp"
+extern "C" {
+#include <osqp.h>
+}
+#include <OsqpEigen/OsqpEigen.h>
 
 using namespace std::chrono_literals;
 
@@ -151,12 +155,32 @@ public:
     // Initialize member variables
     state_received = false;
     delta_X_0 = Eigen::Vector3d::Zero();
+
       // Tuning Parameters
     delta_t = 0.05; // time step, in s
     N = 10; // prediction horizon size
     Q = Eigen::MatrixXd::Identity(3,3);
     P = Q;
     R = Eigen::MatrixXd::Identity(2,2);
+
+      // OSQP:Eigen Initialization
+    solver.settings()->setVerbosity(false);
+    solver.settings()->setWarmStart(true);
+    solver.data()->setNumberOfVariables(2*N);
+    solver.data()->setNumberOfConstraints(2*N);
+      // OSQP Warm Start
+    Eigen::SparseMatrix<double> H_sparse(2*N, 2*N);
+    Eigen::SparseMatrix<double> A_sparse = Eigen::MatrixXd::Identity(2*N, 2*N).sparseView(); // Constraint matrix A remains constant, only computed once
+    Eigen::VectorXd f = Eigen::VectorXd::Zero(2*N);
+    Eigen::VectorXd l = Eigen::VectorXd::Zero(2*N);
+    Eigen::VectorXd u = Eigen::VectorXd::Zero(2*N);
+
+    solver.data()->setHessianMatrix(H_sparse);
+    solver.data()->setGradient(f);
+    solver.data()->setLinearConstraintsMatrix(A_sparse);
+    solver.data()->setLowerBound(l);
+    solver.data()->setUpperBound(u);
+    solver.initSolver();
 
     // Calculate Q_bar and R_bar from tuning matrices Q, P, R
     Q_bar = calc_Q_bar(Q, P, N);
@@ -180,8 +204,7 @@ public:
     
     // Create Publisher for the TurtleBot3 movement topic
     pub_ = this->create_publisher<geometry_msgs::msg::TwistStamped>("/cmd_vel", 10);
-    const auto timer_period = std::chrono::duration_cast<std::chrono::milliseconds>(
-      std::chrono::duration<double>(delta_t * 1000));
+    auto timer_period = std::chrono::milliseconds(static_cast<int>(delta_t * 1000));
     timer_ = this->create_wall_timer(timer_period, [this]() {
       if (!state_received) return;
       // Main MPC loop
@@ -198,17 +221,28 @@ public:
       // Calculate constraint vectors, for the form l <= A Delta_U <= u
       Eigen::MatrixXd l = calc_l(v_ref, w_ref, N);
       Eigen::MatrixXd u = calc_u(v_ref, w_ref, N);
-      Eigen::MatrixXd A = Eigen::MatrixXd::Identity(N*2, N*2);
 
       // Calculate H and f from resulting matrices
       Eigen::MatrixXd H = calc_H(Q_bar, R_bar, B_stacked);
       Eigen::MatrixXd f = calc_f(Q_bar, A_stacked, B_stacked, delta_X_0);
 
-      // OSQP solver
+      // OSQP, convert to sparse matrices
+      Eigen::SparseMatrix<double> H_sparse = H.sparseView();
+      // OSQP, update matrices
+      solver.updateHessianMatrix(H_sparse);
+      solver.updateGradient(f);
+      solver.updateLowerBound(l);
+      solver.updateUpperBound(u);
+      // OSQP, initiate solve and save, clamp for safety
+      solver.solveProblem();
+      Eigen::VectorXd delta_U = solver.getSolution();
+      delta_U[0] = std::clamp(delta_U[0], -0.22, 0.22);
+      delta_U[1] = std::clamp(delta_U[1], -2.84, 2.84);
       
+      // Publish to /cmd_vel
       auto message = geometry_msgs::msg::TwistStamped();
-      message.twist.linear.x = 0.0;
-      message.twist.angular.z = 0.0;
+      message.twist.linear.x = delta_U[0];
+      message.twist.angular.z = delta_U[1];
       RCLCPP_INFO(this->get_logger(), "Publishing: linear.x=%.2f angular.z=%.2f",
                   message.twist.linear.x, message.twist.angular.z);
       pub_->publish(message);
@@ -229,6 +263,9 @@ private:
     double delta_t; // time step, in s
     int N; // prediction horizon size
     Eigen::MatrixXd Q, P, R; // State, Terminal and Input Cost
+
+    // OSQP
+    OsqpEigen::Solver solver;
 
     rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr sub_;
     rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr pub_;

@@ -11,9 +11,13 @@ find_package(nav_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(eigen3_cmake_module REQUIRED)
 find_package(Eigen3 REQUIRED) 
+find_package(osqp REQUIRED)
+find_package(OsqpEigen REQUIRED)
 
 add_executable(controller src/controller.cpp)
 ament_target_dependencies(controller rclcpp nav_msgs geometry_msgs Eigen3)
+target_link_libraries(controller osqp::osqp)
+target_link_libraries(controller OsqpEigen::OsqpEigen)
 
 install(TARGETS
   controller
