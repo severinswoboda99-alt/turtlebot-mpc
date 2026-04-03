@@ -1,0 +1,6 @@
+[submodule "src/osqp-eigen"]
+	path = src/osqp-eigen
+	url = https://github.com/gbionics/osqp-eigen
+[submodule "src/osqp"]
+	path = src/osqp
+	url = https://github.com/osqp/OSQP
