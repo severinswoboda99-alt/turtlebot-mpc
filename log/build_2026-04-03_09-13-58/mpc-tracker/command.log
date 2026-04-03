@@ -1,4 +1,0 @@
-Invoking command in '/home/swo/turtlebot-mpc/build/mpc-tracker': /usr/bin/cmake --build /home/swo/turtlebot-mpc/build/mpc-tracker -- -j16 -l16
-Invoked command in '/home/swo/turtlebot-mpc/build/mpc-tracker' returned '0': /usr/bin/cmake --build /home/swo/turtlebot-mpc/build/mpc-tracker -- -j16 -l16
-Invoking command in '/home/swo/turtlebot-mpc/build/mpc-tracker': /usr/bin/cmake --install /home/swo/turtlebot-mpc/build/mpc-tracker
-Invoked command in '/home/swo/turtlebot-mpc/build/mpc-tracker' returned '0': /usr/bin/cmake --install /home/swo/turtlebot-mpc/build/mpc-tracker
