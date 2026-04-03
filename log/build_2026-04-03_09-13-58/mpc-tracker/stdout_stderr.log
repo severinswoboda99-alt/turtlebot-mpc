@@ -1,0 +1,21 @@
+[ 50%] [32mBuilding CXX object CMakeFiles/controller.dir/src/controller.cpp.o[0m
+[100%] [32m[1mLinking CXX executable controller[0m
+[100%] Built target controller
+-- Install configuration: ""
+-- Installing: /home/swo/turtlebot-mpc/install/mpc-tracker/lib/mpc-tracker/controller
+-- Set non-toolchain portion of runtime path of "/home/swo/turtlebot-mpc/install/mpc-tracker/lib/mpc-tracker/controller" to ""
+-- Installing: /home/swo/turtlebot-mpc/install/mpc-tracker/share/ament_index/resource_index/package_run_dependencies/mpc-tracker
+-- Installing: /home/swo/turtlebot-mpc/install/mpc-tracker/share/ament_index/resource_index/parent_prefix_path/mpc-tracker
+-- Up-to-date: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/environment/ament_prefix_path.sh
+-- Installing: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/environment/ament_prefix_path.dsv
+-- Up-to-date: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/environment/path.sh
+-- Installing: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/environment/path.dsv
+-- Installing: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/local_setup.bash
+-- Installing: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/local_setup.sh
+-- Installing: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/local_setup.zsh
+-- Installing: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/local_setup.dsv
+-- Installing: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/package.dsv
+-- Installing: /home/swo/turtlebot-mpc/install/mpc-tracker/share/ament_index/resource_index/packages/mpc-tracker
+-- Installing: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/cmake/mpc-trackerConfig.cmake
+-- Installing: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/cmake/mpc-trackerConfig-version.cmake
+-- Up-to-date: /home/swo/turtlebot-mpc/install/mpc-tracker/share/mpc-tracker/package.xml
