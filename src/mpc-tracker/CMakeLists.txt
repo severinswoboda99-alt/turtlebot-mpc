@@ -19,9 +19,22 @@ ament_target_dependencies(controller rclcpp nav_msgs geometry_msgs Eigen3)
 target_link_libraries(controller osqp::osqp)
 target_link_libraries(controller OsqpEigen::OsqpEigen)
 
+add_executable(path_planner src/path_planner.cpp)
+ament_target_dependencies(path_planner rclcpp nav_msgs geometry_msgs)
+
+add_executable(travelled_path src/travelled_path.cpp)
+ament_target_dependencies(travelled_path rclcpp nav_msgs geometry_msgs)
+
 install(TARGETS
   controller
+  path_planner
+  travelled_path
   DESTINATION lib/${PROJECT_NAME}
+)
+
+install(
+  FILES launch/launch.py
+  DESTINATION share/${PROJECT_NAME}
 )
 
 if(BUILD_TESTING)

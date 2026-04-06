@@ -1,7 +1,9 @@
 #include <chrono>
+#include <algorithm>
 #include <memory>
 #include <string>
 #include <cmath>
+#include <limits>
 #include <vector>
 #include <iostream>
 #include <Eigen/Dense>
@@ -9,6 +11,8 @@
 #include "rclcpp/rclcpp.hpp"
 #include "nav_msgs/msg/odometry.hpp"
 #include "geometry_msgs/msg/twist_stamped.hpp"
+#include "geometry_msgs/msg/pose_stamped.hpp"
+#include "nav_msgs/msg/path.hpp"
 extern "C" {
 #include <osqp.h>
 }
@@ -22,20 +26,37 @@ double angle_wrap(double alpha){
   {
     alpha = alpha + 2 * M_PI;
   }
-  while (alpha > M_PI)
-  {
+  while (alpha > M_PI) {
     alpha = alpha - 2 * M_PI;
   }
   return alpha;
 }
 
-// Calculate the stacked A matrices, using the reference trajectory data
-Eigen::MatrixXd calc_A_stacked(const std::vector<double>& theta_ref, const std::vector<double>& v_ref, double delta_t, int N) {
+// Function to find the index of the currently closest point
+int closest_index(double x, double y, std::vector<double> x_ref, std::vector<double> y_ref) {
+  double min_dist = std::numeric_limits<double>::max();
+  int index = 0;
+
+  for (int i = 0; i < (int)x_ref.size(); ++i) {
+    double dx = x - x_ref[i];
+    double dy = y - y_ref[i];
+    double dist = dx*dx + dy*dy;
+
+    if (dist < min_dist) {
+      min_dist = dist;
+      index = i;
+    }
+  }
+  return index;
+}
+
+// Calculate the stacked A matrices, using the local horizon trajectory data
+Eigen::MatrixXd calc_A_stacked(const std::vector<double>& theta_local, const std::vector<double>& v_local, double delta_t, int N) {
   // Calculate A matrices
   std::vector<Eigen::Matrix<double,3,3>> A(N);
   for (int k = 0; k < N; ++k) {
-    A[k] << 1, 0, -v_ref[k] * sin(theta_ref[k]) * delta_t,
-            0, 1, v_ref[k] * cos(theta_ref[k]) * delta_t,
+    A[k] << 1, 0, -v_local[k] * sin(theta_local[k]) * delta_t,
+            0, 1, v_local[k] * cos(theta_local[k]) * delta_t,
             0, 0, 1;
   }
 
@@ -52,21 +73,21 @@ Eigen::MatrixXd calc_A_stacked(const std::vector<double>& theta_ref, const std::
   return A_stacked;
 }
 
-// Calculate the stacked B matrices, using the reference trajectory data
-Eigen::MatrixXd calc_B_stacked(const std::vector<double>& theta_ref, const std::vector<double>& v_ref, double delta_t, int N) {
+// Calculate the stacked B matrices, using the local horizon trajectory data
+Eigen::MatrixXd calc_B_stacked(const std::vector<double>& theta_local, const std::vector<double>& v_local, double delta_t, int N) {
   // Calculate A matrices
   std::vector<Eigen::Matrix<double,3,3>> A(N);
   for (int k = 0; k < N; ++k) {
-    A[k] << 1, 0, -v_ref[k] * sin(theta_ref[k]) * delta_t,
-            0, 1, v_ref[k] * cos(theta_ref[k]) * delta_t,
+    A[k] << 1, 0, -v_local[k] * sin(theta_local[k]) * delta_t,
+            0, 1, v_local[k] * cos(theta_local[k]) * delta_t,
             0, 0, 1;
   }
 
   // Calculate B matrices
   std::vector<Eigen::Matrix<double,3,2>> B(N);
   for (int k = 0; k < N; ++k) {
-    B[k] << cos(theta_ref[k]) * delta_t, 0,
-            sin(theta_ref[k]) * delta_t, 0,
+    B[k] << cos(theta_local[k]) * delta_t, 0,
+            sin(theta_local[k]) * delta_t, 0,
             0, delta_t;
   }
 
@@ -122,28 +143,28 @@ Eigen::MatrixXd calc_H(const Eigen::MatrixXd& Q_bar, const Eigen::MatrixXd& R_ba
 }
 
 // Calculate f, used by OSQP
-Eigen::MatrixXd calc_f(const Eigen::MatrixXd& Q_bar, const Eigen::MatrixXd& A_stacked, const Eigen::MatrixXd& B_stacked, const Eigen::MatrixXd& delta_X_0) {
+Eigen::VectorXd calc_f(const Eigen::MatrixXd& Q_bar, const Eigen::MatrixXd& A_stacked, const Eigen::MatrixXd& B_stacked, const Eigen::MatrixXd& delta_X_0) {
   // Calculate f
-  Eigen::MatrixXd f = 2 * B_stacked.transpose() * Q_bar * A_stacked * delta_X_0;
+  Eigen::VectorXd f = 2 * B_stacked.transpose() * Q_bar * A_stacked * delta_X_0;
   return f;
 }
 
 // Calculate l and u, used as OSQP constraints
-Eigen::MatrixXd calc_l(const std::vector<double>& v_ref, const std::vector<double>& w_ref, int N) {
-  Eigen::MatrixXd l(2*N,1);
+Eigen::VectorXd calc_l(const std::vector<double>& v_local, const std::vector<double>& w_local, int N) {
+  Eigen::VectorXd l(2*N,1);
   for (int i = 0; i <= N-1; ++i) {
     int offset = i * 2;
-    l.block(offset, 0, 2, 1) << -0.22 - v_ref[i],
-                                -2.84 - w_ref[i];
+    l.segment(offset, 2) << -0.22 - v_local[i],
+                                -2.84 - w_local[i];
   }
   return l;
 }
-Eigen::MatrixXd calc_u(const std::vector<double>& v_ref, const std::vector<double>& w_ref, int N) {
-  Eigen::MatrixXd u(2*N,1);
+Eigen::VectorXd calc_u(const std::vector<double>& v_local, const std::vector<double>& w_local, int N) {
+  Eigen::VectorXd u(2*N,1);
   for (int i = 0; i <= N-1; ++i) {
     int offset = i * 2;
-    u.block(offset, 0, 2, 1) << 0.22 - v_ref[i],
-                                2.84 - w_ref[i];
+    u.segment(offset, 2) << 0.22 - v_local[i],
+                                2.84 - w_local[i];
   }
   return u;
 }
@@ -152,41 +173,82 @@ Eigen::MatrixXd calc_u(const std::vector<double>& v_ref, const std::vector<doubl
 class MPCNode : public rclcpp::Node {
 public:
   MPCNode() : rclcpp::Node("mpc_node") {
+    // Dynamic Reconfigue
+    this->declare_parameter<bool>("start", false);
+    start = this->get_parameter("start").as_bool();
+    param_cb_handle_ = this->add_on_set_parameters_callback(
+      std::bind(&MPCNode::on_param_set, this, std::placeholders::_1));
+
     // Initialize member variables
     state_received = false;
+    path_received = false;
+    solver_initialized = false;
     delta_X_0 = Eigen::Vector3d::Zero();
 
       // Tuning Parameters
-    delta_t = 0.05; // time step, in s
+    delta_t = 0.1; // time step, in s
     N = 10; // prediction horizon size
-    Q = Eigen::MatrixXd::Identity(3,3);
+    Q = 10 * Eigen::MatrixXd::Identity(3,3);
     P = Q;
-    R = Eigen::MatrixXd::Identity(2,2);
+    R = 0.1 * Eigen::MatrixXd::Identity(2,2);
 
       // OSQP:Eigen Initialization
     solver.settings()->setVerbosity(false);
     solver.settings()->setWarmStart(true);
     solver.data()->setNumberOfVariables(2*N);
     solver.data()->setNumberOfConstraints(2*N);
-      // OSQP Warm Start
-    Eigen::SparseMatrix<double> H_sparse(2*N, 2*N);
-    Eigen::SparseMatrix<double> A_sparse = Eigen::MatrixXd::Identity(2*N, 2*N).sparseView(); // Constraint matrix A remains constant, only computed once
-    Eigen::VectorXd f = Eigen::VectorXd::Zero(2*N);
-    Eigen::VectorXd l = Eigen::VectorXd::Zero(2*N);
-    Eigen::VectorXd u = Eigen::VectorXd::Zero(2*N);
-
-    solver.data()->setHessianMatrix(H_sparse);
-    solver.data()->setGradient(f);
-    solver.data()->setLinearConstraintsMatrix(A_sparse);
-    solver.data()->setLowerBound(l);
-    solver.data()->setUpperBound(u);
-    solver.initSolver();
+      // Constraint matrix A stays constant
+    A_sparse = Eigen::MatrixXd::Identity(2*N, 2*N).sparseView();
 
     // Calculate Q_bar and R_bar from tuning matrices Q, P, R
     Q_bar = calc_Q_bar(Q, P, N);
     R_bar = calc_R_bar(R, N);
 
     // Subscriber to reference trajectory
+    auto ref_callback = [this](const nav_msgs::msg::Path & path){
+      // Clear the vectors, should the path change
+      this->x_ref.clear();
+      this->y_ref.clear();
+      this->theta_ref.clear();
+      this->v_ref.clear();
+      this->w_ref.clear();
+
+      // Keep the full reference path so the controller can look ahead.
+      const int size = static_cast<int>(path.poses.size());
+      this->x_ref.reserve(size);
+      this->y_ref.reserve(size);
+      this->theta_ref.reserve(size);
+
+      // Populate pose vectors
+      for (int i = 0; i < size; ++i) {
+        const auto & pose = path.poses[i].pose;
+        this->x_ref.push_back(pose.position.x);
+        this->y_ref.push_back(pose.position.y);
+
+        const double qx = pose.orientation.x;
+        const double qy = pose.orientation.y;
+        const double qz = pose.orientation.z;
+        const double qw = pose.orientation.w;
+        this->theta_ref.push_back(
+          angle_wrap(::atan2(2 * (qw * qz + qx * qy), 1 - 2 * (qy * qy + qz * qz)))); // Conversion, quaternion to radian
+      }
+
+      // Populate input vectors
+      for (int i = 0; i < size - 1; ++i) {
+        double dx = x_ref[i+1] - x_ref[i];
+        double dy = y_ref[i+1] - y_ref[i];
+
+        double v = std::sqrt(dx*dx + dy*dy) / delta_t;
+        double w = angle_wrap(theta_ref[i+1] - theta_ref[i]) / delta_t;
+
+        v_ref.push_back(v);
+        w_ref.push_back(w);
+      }
+
+      this->path_received = true;
+    };
+    path_sub_ = this->create_subscription<nav_msgs::msg::Path>(
+      "/path", 10, ref_callback);
 
     // Subscriber to current pose of TurtleBot
     auto odom_callback = [this](const nav_msgs::msg::Odometry & msg){
@@ -199,50 +261,105 @@ public:
       this->theta = angle_wrap(::atan2(2 * (qw * qz + qx * qy), 1 - 2 * (qy * qy + qz * qz))); // Conversion, quaternion to radian
       this->state_received = true;
     };
-    sub_ = this->create_subscription<nav_msgs::msg::Odometry>(
+    odom_sub_ = this->create_subscription<nav_msgs::msg::Odometry>(
       "odom", 10, odom_callback);
     
     // Create Publisher for the TurtleBot3 movement topic
     pub_ = this->create_publisher<geometry_msgs::msg::TwistStamped>("/cmd_vel", 10);
     auto timer_period = std::chrono::milliseconds(static_cast<int>(delta_t * 1000));
     timer_ = this->create_wall_timer(timer_period, [this]() {
-      if (!state_received) return;
+      // Only drive the robot when the state and reference path have been received, and the start signal has been given
+      if (!state_received || !path_received || !start) {
+        auto message = geometry_msgs::msg::TwistStamped();
+        message.twist.linear.x = 0.0;
+        message.twist.angular.z = 0.0;
+        RCLCPP_INFO(this->get_logger(), "Stopped: linear.x=%.2f angular.z=%.2f",
+                  message.twist.linear.x, message.twist.angular.z);
+        pub_->publish(message);
+        return;
+      }
+
       // Main MPC loop
+      // Create Local Horizon, up to N steps, starting from the nearest reference point
+      int i_c = closest_index(x, y, x_ref, y_ref);
+      int remaining_points = static_cast<int>(x_ref.size()) - i_c;
+        // If no points remain, stop the robot
+      if (remaining_points <= 0) {
+        auto stop_msg = geometry_msgs::msg::TwistStamped();
+        stop_msg.twist.linear.x = 0.0;
+        stop_msg.twist.angular.z = 0.0;
+        pub_->publish(stop_msg);
+        return;
+      }
+        // Populate local horizon vectors with data from the path planner
+      std::vector<double> x_local, y_local, theta_local, v_local, w_local;
+      for (int i = 0; i < N; ++i) {
+        x_local.push_back(x_ref[i_c + i]);
+        y_local.push_back(y_ref[i_c + i]);
+        theta_local.push_back(theta_ref[i_c + i]);
+        v_local.push_back(v_ref[i_c + i]);
+        w_local.push_back(w_ref[i_c + i]);
+      }
 
-      // Calculate A_stacked and B_stacked from reference trajectory data
-      Eigen::MatrixXd A_stacked = calc_A_stacked(theta_ref, v_ref, delta_t, N);
-      Eigen::MatrixXd B_stacked = calc_B_stacked(theta_ref, v_ref, delta_t, N);
+      // Calculate A_stacked and B_stacked from local horizon trajectory data
+      Eigen::MatrixXd A_stacked = calc_A_stacked(theta_local, v_local, delta_t, N);
+      Eigen::MatrixXd B_stacked = calc_B_stacked(theta_local, v_local, delta_t, N);
 
-      // Calculate delta_X_0 from current state and reference
-      delta_X_0 <<  x - x_ref[0], 
-                    y - y_ref[0], 
-                    angle_wrap(theta - theta_ref[0]);
+      // Calculate delta_X_0 from current state and local horizon
+      delta_X_0 <<  x - x_local[0], 
+                    y - y_local[0], 
+                    angle_wrap(theta - theta_local[0]);
 
       // Calculate constraint vectors, for the form l <= A Delta_U <= u
-      Eigen::MatrixXd l = calc_l(v_ref, w_ref, N);
-      Eigen::MatrixXd u = calc_u(v_ref, w_ref, N);
+      Eigen::VectorXd l = calc_l(v_local, w_local, N);
+      Eigen::VectorXd u = calc_u(v_local, w_local, N);
 
       // Calculate H and f from resulting matrices
       Eigen::MatrixXd H = calc_H(Q_bar, R_bar, B_stacked);
-      Eigen::MatrixXd f = calc_f(Q_bar, A_stacked, B_stacked, delta_X_0);
+      Eigen::VectorXd f = calc_f(Q_bar, A_stacked, B_stacked, delta_X_0);
 
       // OSQP, convert to sparse matrices
       Eigen::SparseMatrix<double> H_sparse = H.sparseView();
-      // OSQP, update matrices
-      solver.updateHessianMatrix(H_sparse);
-      solver.updateGradient(f);
-      solver.updateLowerBound(l);
-      solver.updateUpperBound(u);
-      // OSQP, initiate solve and save, clamp for safety
-      solver.solveProblem();
+
+      // OSQP, initialize once; update only afterwards.
+      if (!solver_initialized) {
+        if (!solver.data()->setHessianMatrix(H_sparse) ||
+            !solver.data()->setGradient(f) ||
+            !solver.data()->setLinearConstraintsMatrix(A_sparse) ||
+            !solver.data()->setLowerBound(l) ||
+            !solver.data()->setUpperBound(u) ||
+            !solver.initSolver()) {
+          RCLCPP_ERROR(this->get_logger(), "Failed to initialize solver.");
+          return;
+        }
+        solver_initialized = true;
+      } else {
+        if (!solver.updateHessianMatrix(H_sparse) ||
+            !solver.updateGradient(f) ||
+            !solver.updateLowerBound(l) ||
+            !solver.updateUpperBound(u)) {
+          RCLCPP_ERROR(this->get_logger(), "Failed to update solver.");
+          return;
+        }
+      }
+
+      // OSQP, solve
+      if (solver.solveProblem() != OsqpEigen::ErrorExitFlag::NoError) {
+        RCLCPP_ERROR(this->get_logger(), "OSQP solveProblem() failed.");
+        return;
+      }
+
+      // OSQP, get solution and clamp output for safety
       Eigen::VectorXd delta_U = solver.getSolution();
-      delta_U[0] = std::clamp(delta_U[0], -0.22, 0.22);
-      delta_U[1] = std::clamp(delta_U[1], -2.84, 2.84);
+      double v_cmd = v_local[0] + delta_U[0];
+      double w_cmd = w_local[0] + delta_U[1];
+      v_cmd = std::clamp(v_cmd, -0.22, 0.22);
+      w_cmd = std::clamp(w_cmd, -2.84, 2.84);
       
       // Publish to /cmd_vel
       auto message = geometry_msgs::msg::TwistStamped();
-      message.twist.linear.x = delta_U[0];
-      message.twist.angular.z = delta_U[1];
+      message.twist.linear.x = v_cmd;
+      message.twist.angular.z = w_cmd;
       RCLCPP_INFO(this->get_logger(), "Publishing: linear.x=%.2f angular.z=%.2f",
                   message.twist.linear.x, message.twist.angular.z);
       pub_->publish(message);
@@ -251,7 +368,7 @@ public:
 
 private:
     // Safety flag
-    bool state_received;
+    bool state_received, path_received, start;
     // Current state
     double x, y, theta;
     // Reference State and Input
@@ -266,10 +383,33 @@ private:
 
     // OSQP
     OsqpEigen::Solver solver;
+    bool solver_initialized;
+    Eigen::SparseMatrix<double> A_sparse;
 
-    rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr sub_;
+    // Dynamic Reconfigure
+    rcl_interfaces::msg::SetParametersResult
+    on_param_set(const std::vector<rclcpp::Parameter> &params) {
+      rcl_interfaces::msg::SetParametersResult res;
+      res.successful = true;
+
+      for (const auto &param : params) {
+      const std::string &name = param.get_name();
+
+      if (name == "start") {
+        start = param.as_bool();
+      } else {
+        res.successful = false;
+        res.reason = "Unknown parameter: " + name;
+      }
+    }
+    return res;
+  }
+
+    rclcpp::Subscription<nav_msgs::msg::Path>::SharedPtr path_sub_;
+    rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub_;
     rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr pub_;
     rclcpp::TimerBase::SharedPtr timer_;
+    rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr param_cb_handle_;
 };
 
 // Main function to run the node

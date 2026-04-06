@@ -8,3 +8,11 @@ No alterations have been made here either, it is licensed under the BSD 3-Clause
 
 ### Prerequisites ###
 * Install OSQP, according to their website: osqp.org
+
+### Launch ###
+From sourced terminals:
+$ export TURTLEBOT3_MODEL=burger
+$ ros2 launch turtlebot3_gazebo empty_world.launch.py
+
+Wait until it is set up, then launch from another terminal:
+$ ros2 launch mpc-tracker launch.py
