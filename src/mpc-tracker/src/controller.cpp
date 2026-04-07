@@ -403,7 +403,7 @@ private:
       }
     }
     return res;
-  }
+    }
 
     rclcpp::Subscription<nav_msgs::msg::Path>::SharedPtr path_sub_;
     rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub_;

@@ -21,6 +21,10 @@ target_link_libraries(controller OsqpEigen::OsqpEigen)
 
 add_executable(path_planner src/path_planner.cpp)
 ament_target_dependencies(path_planner rclcpp nav_msgs geometry_msgs)
+target_include_directories(path_planner
+  PRIVATE
+    include
+)
 
 add_executable(travelled_path src/travelled_path.cpp)
 ament_target_dependencies(travelled_path rclcpp nav_msgs geometry_msgs)
