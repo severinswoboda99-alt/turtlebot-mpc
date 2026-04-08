@@ -23,6 +23,7 @@ $ ros2 topic info /chatter
 
 +Key GUI tools:
 • rqt_graph: node–topic graph
+• ros2 run rqt_plot rqt_plot: plotting, duh
 • rqt: plotting, parameter tuning, more
 • rviz2: 3D visualization for robot state, sensors, and TFs
 

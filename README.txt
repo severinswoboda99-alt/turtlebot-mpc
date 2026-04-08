@@ -11,7 +11,7 @@ A C++ cubic spline interpolation library (https://github.com/ttk592/spline) is u
 It is GNU GENERAL PUBLIC license, no part of it was modified.
 
 ### Prerequisites ###
-* Install OSQP, according to their website: osqp.org
+* Install OSQP, according to their website.
 
 ### Launch ###
 From sourced terminal:

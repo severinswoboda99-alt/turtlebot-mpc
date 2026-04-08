@@ -9,7 +9,7 @@ import os
 def generate_launch_description():
     aruco_config = os.path.join(
         get_package_share_directory('mpc-tracker'),
-        'rviz_config_v1.rviz'
+        'rviz_config_v2.rviz'
     )
     
     turtlebot_launch = os.path.join(

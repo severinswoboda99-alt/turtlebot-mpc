@@ -175,7 +175,29 @@ public:
   MPCNode() : rclcpp::Node("mpc_node") {
     // Dynamic Reconfigue
     this->declare_parameter<bool>("start", false);
+    this->declare_parameter<double>("delta_t", 0.1);  // time step size, in s
+    this->declare_parameter<int>("N", 15);            // Horizon size
+    this->declare_parameter<double>("q_1", 20.0);
+    this->declare_parameter<double>("q_2", 20.0);
+    this->declare_parameter<double>("q_3", 5.0);
+    this->declare_parameter<double>("p_1", 40.0);
+    this->declare_parameter<double>("p_2", 40.0);
+    this->declare_parameter<double>("p_3", 10.0);
+    this->declare_parameter<double>("r_1", 0.5);
+    this->declare_parameter<double>("r_2", 0.2);
+
     start = this->get_parameter("start").as_bool();
+    delta_t = this->get_parameter("delta_t").as_double();
+    N = this->get_parameter("N").as_int();
+    q_1 = this->get_parameter("q_1").as_double();
+    q_2 = this->get_parameter("q_2").as_double();
+    q_3 = this->get_parameter("q_3").as_double();
+    p_1 = this->get_parameter("p_1").as_double();
+    p_2 = this->get_parameter("p_2").as_double();
+    p_3 = this->get_parameter("p_3").as_double();
+    r_1 = this->get_parameter("r_1").as_double();
+    r_2 = this->get_parameter("r_2").as_double();
+
     param_cb_handle_ = this->add_on_set_parameters_callback(
       std::bind(&MPCNode::on_param_set, this, std::placeholders::_1));
 
@@ -185,12 +207,17 @@ public:
     solver_initialized = false;
     delta_X_0 = Eigen::Vector3d::Zero();
 
-      // Tuning Parameters
-    delta_t = 0.1; // time step, in s
-    N = 10; // prediction horizon size
-    Q = 10 * Eigen::MatrixXd::Identity(3,3);
-    P = Q;
-    R = 0.1 * Eigen::MatrixXd::Identity(2,2);
+    // Tuning Parameters 
+    Q << q_1, 0, 0,
+        0, q_2, 0,
+        0, 0, q_3;
+
+    P << p_1, 0, 0,
+        0, p_2, 0,
+        0, 0, p_3;
+
+    R << r_1, 0,
+        0, r_2;
 
       // OSQP:Eigen Initialization
     solver.settings()->setVerbosity(false);
@@ -213,7 +240,7 @@ public:
       this->v_ref.clear();
       this->w_ref.clear();
 
-      // Keep the full reference path so the controller can look ahead.
+      // Size pose vectors
       const int size = static_cast<int>(path.poses.size());
       this->x_ref.reserve(size);
       this->y_ref.reserve(size);
@@ -265,33 +292,42 @@ public:
       "odom", 10, odom_callback);
     
     // Create Publisher for the TurtleBot3 movement topic
-    pub_ = this->create_publisher<geometry_msgs::msg::TwistStamped>("/cmd_vel", 10);
-    auto timer_period = std::chrono::milliseconds(static_cast<int>(delta_t * 1000));
+    cmd_pub_ = this->create_publisher<geometry_msgs::msg::TwistStamped>("/cmd_vel", 10);
+    // Create Publisher for the local horizon
+    horizon_pub_ = this->create_publisher<nav_msgs::msg::Path>("/horizon", 10);
+
+    // Create main timer and corresponding callback function
+    auto timer_period = std::chrono::milliseconds(static_cast<int>(delta_t * 1000)); // Conversion to ms
     timer_ = this->create_wall_timer(timer_period, [this]() {
       // Only drive the robot when the state and reference path have been received, and the start signal has been given
       if (!state_received || !path_received || !start) {
         auto message = geometry_msgs::msg::TwistStamped();
         message.twist.linear.x = 0.0;
         message.twist.angular.z = 0.0;
-        RCLCPP_INFO(this->get_logger(), "Stopped: linear.x=%.2f angular.z=%.2f",
-                  message.twist.linear.x, message.twist.angular.z);
-        pub_->publish(message);
+        RCLCPP_INFO(this->get_logger(), "Stopped: Waiting for Path, State or Start Data");
+        cmd_pub_->publish(message);
         return;
       }
 
       // Main MPC loop
       // Create Local Horizon, up to N steps, starting from the nearest reference point
       int i_c = closest_index(x, y, x_ref, y_ref);
-      int remaining_points = static_cast<int>(x_ref.size()) - i_c;
-        // If no points remain, stop the robot
-      if (remaining_points <= 0) {
-        auto stop_msg = geometry_msgs::msg::TwistStamped();
-        stop_msg.twist.linear.x = 0.0;
-        stop_msg.twist.angular.z = 0.0;
-        pub_->publish(stop_msg);
+  
+      // Check if robot is near the end of the path (5 cm), and stop, if necessary
+      double dx = x - x_ref.back();
+      double dy = y - y_ref.back();
+      double dist_to_goal = std::sqrt(dx * dx + dy * dy);
+
+      if (dist_to_goal < 0.05) {
+        auto message = geometry_msgs::msg::TwistStamped();
+        message.twist.linear.x = 0.0;
+        message.twist.angular.z = 0.0;
+        RCLCPP_INFO(this->get_logger(), "Stopped: End of Path");
+        cmd_pub_->publish(message);
         return;
       }
-        // Populate local horizon vectors with data from the path planner
+      
+      // Populate local horizon vectors with data from the path planner
       std::vector<double> x_local, y_local, theta_local, v_local, w_local;
       for (int i = 0; i < N; ++i) {
         x_local.push_back(x_ref[i_c + i]);
@@ -300,6 +336,21 @@ public:
         v_local.push_back(v_ref[i_c + i]);
         w_local.push_back(w_ref[i_c + i]);
       }
+
+      // Publish the horizon dynamically for visualization
+      auto horizon = nav_msgs::msg::Path();
+      auto now = this->now();
+      horizon.header.stamp = now;
+      horizon.header.frame_id = "odom";
+      for (int i = 0; i < N; ++i) {
+        geometry_msgs::msg::PoseStamped pose;
+        pose.header.frame_id = "odom";
+        pose.header.stamp = now;
+        pose.pose.position.x = x_local[i];
+        pose.pose.position.y = y_local[i];
+        horizon.poses.push_back(pose);
+      }
+      horizon_pub_->publish(horizon);
 
       // Calculate A_stacked and B_stacked from local horizon trajectory data
       Eigen::MatrixXd A_stacked = calc_A_stacked(theta_local, v_local, delta_t, N);
@@ -362,7 +413,7 @@ public:
       message.twist.angular.z = w_cmd;
       RCLCPP_INFO(this->get_logger(), "Publishing: linear.x=%.2f angular.z=%.2f",
                   message.twist.linear.x, message.twist.angular.z);
-      pub_->publish(message);
+      cmd_pub_->publish(message);
     });
   }
 
@@ -379,7 +430,9 @@ private:
     Eigen::Vector3d delta_X_0;
     double delta_t; // time step, in s
     int N; // prediction horizon size
-    Eigen::MatrixXd Q, P, R; // State, Terminal and Input Cost
+    Eigen::Matrix3d Q, P; // State and Terminal Cost
+    Eigen::Matrix2d R; // Input Cost
+    double q_1, q_2, q_3, p_1, p_2, p_3, r_1, r_2; // Matrix entries
 
     // OSQP
     OsqpEigen::Solver solver;
@@ -397,6 +450,26 @@ private:
 
       if (name == "start") {
         start = param.as_bool();
+      } else if (name == "delta_t") {
+        delta_t = param.as_double();
+      } else if (name == "N") {
+        N = param.as_int();
+      } else if (name == "q_1") {
+        q_1 = param.as_double();
+      } else if (name == "q_2") {
+        q_2 = param.as_double();
+      } else if (name == "q_3") {
+        q_3 = param.as_double();
+      } else if (name == "p_1") {
+        p_1 = param.as_double();
+      } else if (name == "p_2") {
+        p_2 = param.as_double();
+      } else if (name == "p_3") {
+        p_3 = param.as_double();
+      } else if (name == "r_1") {
+        r_1 = param.as_double();
+      } else if (name == "r_2") {
+        r_2 = param.as_double();
       } else {
         res.successful = false;
         res.reason = "Unknown parameter: " + name;
@@ -407,7 +480,8 @@ private:
 
     rclcpp::Subscription<nav_msgs::msg::Path>::SharedPtr path_sub_;
     rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub_;
-    rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr pub_;
+    rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr cmd_pub_;
+    rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr horizon_pub_;
     rclcpp::TimerBase::SharedPtr timer_;
     rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr param_cb_handle_;
 };

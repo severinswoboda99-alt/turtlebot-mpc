@@ -54,14 +54,48 @@ public:
       }
       case 2: {
         // Spline "Reverse S"
-        std::vector<double> X = {0, 1.2, 2.2, 3.2, 3.8, 4.2, 4.8, 5.2, 5.7, 6.7, 6.9, 7.5, 8};
-        std::vector<double> Y = {0,   1,   1,   1,   0,   0,   0,-1.5,-1.5,-1.5,   0,   0, 1};
+        std::vector<double> X = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+        std::vector<double> Y = {0, 0.8, 1.2, 0.5, 0, -0.5, -1.2, -0.8, 0};
 
         // default cubic spline (C^2) with natural boundary conditions (f''=0)
         tk::spline s(X,Y);			// X needs to be strictly increasing
         for (int i = 0; i < 200; ++i) {
           double x = (8.0 / 200.0) * i;
           double y = s((8.0 / 200.0) * i);
+          double dydx = s.deriv(1, x);        // first derivative dy/dy
+          double yaw  = std::atan2(dydx, 1.0);
+          auto pose = make_pose(x, y, yaw, now);
+          path.poses.push_back(pose);
+        }
+        break;
+      }
+      case 3: {
+        // Spline "Wide Curve"
+        std::vector<double> X = {0, 1, 2, 3, 4, 5, 6};
+        std::vector<double> Y = {0, 0.2, 0.8, 1.5, 2.2, 2.8, 3.0};
+
+        // default cubic spline (C^2) with natural boundary conditions (f''=0)
+        tk::spline s(X,Y);			// X needs to be strictly increasing
+        for (int i = 0; i < 200; ++i) {
+          double x = (6.0 / 200.0) * i;
+          double y = s((6.0 / 200.0) * i);
+          double dydx = s.deriv(1, x);        // first derivative dy/dy
+          double yaw  = std::atan2(dydx, 1.0);
+          auto pose = make_pose(x, y, yaw, now);
+          path.poses.push_back(pose);
+        }
+        break;
+      }
+      case 4: {
+        // Spline "Tight S"
+        std::vector<double> X = {0, 1, 2, 3, 4, 5, 6};
+        std::vector<double> Y = {0, 1, 0.5, -1, -0.5, 1, 0};
+
+        // default cubic spline (C^2) with natural boundary conditions (f''=0)
+        tk::spline s(X,Y);			// X needs to be strictly increasing
+        for (int i = 0; i < 200; ++i) {
+          double x = (6.0 / 200.0) * i;
+          double y = s((6.0 / 200.0) * i);
           double dydx = s.deriv(1, x);        // first derivative dy/dy
           double yaw  = std::atan2(dydx, 1.0);
           auto pose = make_pose(x, y, yaw, now);
@@ -82,6 +116,8 @@ private:
   // 0: Straight Line
   // 1: Straight Line variant
   // 2: Spline "Reverse S"
+  // 3: Spline "Wide Curve"
+  // 4: Spline "Tight S"
   int map;
 
   // Function to create pose message from known data
