@@ -1,6 +1,7 @@
 from launch import LaunchDescription
 from launch_ros.actions import Node
-from launch.actions import ExecuteProcess
+from launch.actions import ExecuteProcess, IncludeLaunchDescription, SetEnvironmentVariable
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from ament_index_python.packages import get_package_share_directory
 import os
 
@@ -11,7 +12,20 @@ def generate_launch_description():
         'rviz_config_v1.rviz'
     )
     
+    turtlebot_launch = os.path.join(
+        get_package_share_directory('turtlebot3_gazebo'),
+        'launch',
+        'empty_world.launch.py'
+    )
+    
     return LaunchDescription([
+        SetEnvironmentVariable(
+            name='TURTLEBOT3_MODEL',
+            value='burger'
+        ),
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(turtlebot_launch)
+        ),
         Node(
             package="mpc-tracker",
             executable="path_planner",

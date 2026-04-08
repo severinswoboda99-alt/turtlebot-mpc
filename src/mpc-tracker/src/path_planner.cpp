@@ -60,8 +60,8 @@ public:
         // default cubic spline (C^2) with natural boundary conditions (f''=0)
         tk::spline s(X,Y);			// X needs to be strictly increasing
         for (int i = 0; i < 200; ++i) {
-          double x = (7.0 / 200.0) * i;
-          double y = s((7.0 / 200.0) * i);
+          double x = (8.0 / 200.0) * i;
+          double y = s((8.0 / 200.0) * i);
           double dydx = s.deriv(1, x);        // first derivative dy/dy
           double yaw  = std::atan2(dydx, 1.0);
           auto pose = make_pose(x, y, yaw, now);

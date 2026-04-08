@@ -14,9 +14,5 @@ It is GNU GENERAL PUBLIC license, no part of it was modified.
 * Install OSQP, according to their website: osqp.org
 
 ### Launch ###
-From sourced terminals:
-$ export TURTLEBOT3_MODEL=burger
-$ ros2 launch turtlebot3_gazebo empty_world.launch.py
-
-Wait until it is set up, then launch from another terminal:
+From sourced terminal:
 $ ros2 launch mpc-tracker launch.py

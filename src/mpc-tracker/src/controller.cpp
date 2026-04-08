@@ -32,7 +32,7 @@ double angle_wrap(double alpha){
   return alpha;
 }
 
-// Function to find the index of the currently closest point
+// Function to find the index of the currently closest refernce path point
 int closest_index(double x, double y, std::vector<double> x_ref, std::vector<double> y_ref) {
   double min_dist = std::numeric_limits<double>::max();
   int index = 0;
