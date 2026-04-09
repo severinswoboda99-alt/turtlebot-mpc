@@ -267,6 +267,8 @@ public:
 
         double v = std::sqrt(dx*dx + dy*dy) / delta_t;
         double w = angle_wrap(theta_ref[i+1] - theta_ref[i]) / delta_t;
+        v = std::clamp(v, -0.22, 0.22);
+        w = std::clamp(w, -2.84, 2.84);
 
         v_ref.push_back(v);
         w_ref.push_back(w);
@@ -310,15 +312,15 @@ public:
       }
 
       // Main MPC loop
-      // Create Local Horizon, up to N steps, starting from the nearest reference point
+      // Create Local Horizon, up to N steps, starting from the nearest reference point i_c
       int i_c = closest_index(x, y, x_ref, y_ref);
   
       // Check if robot is near the end of the path (5 cm), and stop, if necessary
       double dx = x - x_ref.back();
       double dy = y - y_ref.back();
-      double dist_to_goal = std::sqrt(dx * dx + dy * dy);
+      double dist_to_end = std::sqrt(dx * dx + dy * dy);
 
-      if (dist_to_goal < 0.05) {
+      if (dist_to_end < 0.05) {
         auto message = geometry_msgs::msg::TwistStamped();
         message.twist.linear.x = 0.0;
         message.twist.angular.z = 0.0;
@@ -328,13 +330,41 @@ public:
       }
       
       // Populate local horizon vectors with data from the path planner
+      // N input and states are needed for the prediction horizon
+      // The path planner provides a series of approximately equally spaced poses, not time-stamped!
+      // The controller has already constructed a reference trajectory, adding the inputs for each step, still not time-stamped!
+      // The controller model works with time steps, so for each time step the appropriate reference trajectory step is approximated
+      // by projecting the robots movement forwards, resulting in the local horizon vectors:
       std::vector<double> x_local, y_local, theta_local, v_local, w_local;
-      for (int i = 0; i < N; ++i) {
-        x_local.push_back(x_ref[i_c + i]);
-        y_local.push_back(y_ref[i_c + i]);
-        theta_local.push_back(theta_ref[i_c + i]);
-        v_local.push_back(v_ref[i_c + i]);
-        w_local.push_back(w_ref[i_c + i]);
+
+      int idx = i_c;
+      double total_dist = 0.0;
+
+      for (int k = 0; k < N; ++k) {
+        x_local.push_back(x_ref[idx]);
+        y_local.push_back(y_ref[idx]);
+        theta_local.push_back(theta_ref[idx]);
+        v_local.push_back(v_ref[idx]);
+        w_local.push_back(w_ref[idx]);
+
+          // Target distance for next step
+        double target_dist = v_ref[idx] * delta_t;
+
+        total_dist = 0.0;
+
+          // Move forward along path until distance ~ v*dt
+        while (idx + 1 < (int)x_ref.size()) {
+          double dx = x_ref[idx+1] - x_ref[idx];
+          double dy = y_ref[idx+1] - y_ref[idx];
+          double ds = std::sqrt(dx*dx + dy*dy);
+
+          total_dist += ds;
+          idx++;
+
+          if (total_dist >= target_dist) {
+            break;
+          }
+        }
       }
 
       // Publish the horizon dynamically for visualization
@@ -454,6 +484,18 @@ private:
         delta_t = param.as_double();
       } else if (name == "N") {
         N = param.as_int();
+
+        // Rebuild MPC structures
+        Q_bar = calc_Q_bar(Q, P, N);
+        R_bar = calc_R_bar(R, N);
+        A_sparse = Eigen::MatrixXd::Identity(2*N, 2*N).sparseView();
+
+        // Reset solver
+        solver.clearSolver();
+        solver.data()->setNumberOfVariables(2*N);
+        solver.data()->setNumberOfConstraints(2*N);
+
+        solver_initialized = false;
       } else if (name == "q_1") {
         q_1 = param.as_double();
       } else if (name == "q_2") {
