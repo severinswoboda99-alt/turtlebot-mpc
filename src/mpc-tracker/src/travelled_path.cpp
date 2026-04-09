@@ -8,24 +8,33 @@ class TravelledPathPub : public rclcpp::Node
 public:
     TravelledPathPub() : Node("travelled_path")
     {
-        auto odom_callback =
-        [this](nav_msgs::msg::Odometry::SharedPtr msg) -> void {
-            geometry_msgs::msg::PoseStamped pose;
-            pose.header = msg->header;
-            path_.header.frame_id = "odom";
-            pose.pose = msg->pose.pose;
-            path_.poses.push_back(pose);
-            path_pub_->publish(path_);
-        };
-        odom_sub_ = this->create_subscription<nav_msgs::msg::Odometry>("/odom", 10, odom_callback);
-
         path_pub_ = this->create_publisher<nav_msgs::msg::Path>("/travelled_path", 10);
+
+        odom_sub_ = this->create_subscription<nav_msgs::msg::Odometry>(
+            "/odom", 10,
+            [this](nav_msgs::msg::Odometry::SharedPtr msg) {
+                latest_pose_.header = msg->header;
+                latest_pose_.pose = msg->pose.pose;
+            });
+
+        timer_ = this->create_wall_timer(
+            std::chrono::milliseconds(100),
+            [this]() {
+                if (latest_pose_.header.stamp.sec != 0) {  // check if initialized
+                    path_.header.frame_id = "odom";
+                    path_.poses.push_back(latest_pose_);
+                    path_pub_->publish(path_);
+                }
+            });
     }
 
 private:
     rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub_;
     rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr path_pub_;
+    rclcpp::TimerBase::SharedPtr timer_;
+
     nav_msgs::msg::Path path_;
+    geometry_msgs::msg::PoseStamped latest_pose_;
 };
 
 int main(int argc, char **argv)

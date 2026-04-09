@@ -21,6 +21,7 @@ target_link_libraries(controller OsqpEigen::OsqpEigen)
 
 add_executable(path_planner src/path_planner.cpp)
 ament_target_dependencies(path_planner rclcpp nav_msgs geometry_msgs)
+# Link to spline library
 target_include_directories(path_planner
   PRIVATE
     include

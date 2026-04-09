@@ -10,9 +10,20 @@ No alterations have been made here either, it is licensed under the BSD 3-Clause
 A C++ cubic spline interpolation library (https://github.com/ttk592/spline) is used for the path planner. 
 It is GNU GENERAL PUBLIC license, no part of it was modified.
 
+Data is visualized with rosbag2 and matplotlib.
+
 ### Prerequisites ###
 * Install OSQP, according to their website.
 
 ### Launch ###
 From sourced terminal:
 $ ros2 launch mpc-tracker launch.py
+
+### Record and Plot ###
+$ cd /home/swo/turtlebot-mpc/src/mpc-tracker/rosbag2
+$ ros2 bag record /path /travelled_path
+
+Stop recording with CTRL+C
+Update bag path in evaluation.py, then:
+$ cd /home/swo/turtlebot-mpc/src/mpc-tracker/evaluation
+$ python3 evaluation.py
