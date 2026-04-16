@@ -33,8 +33,8 @@ public:
       // Create map according to index
       switch (map) {
       case 0: {
-        // Straight Line, forward
-        for (int i = 0; i < 200; ++i) {
+        // Straight Line, forward, 3 meters, in 5 cm increments
+        for (int i = 0; i < 60; ++i) {
           double x = i * 0.05;
           auto pose = make_pose(x, 0, 0, now);
           path.poses.push_back(pose); 
@@ -42,26 +42,32 @@ public:
         break;
       }
       case 1: {
-        // Straight Line, slight angle
-        for (int i = 0; i < 200; ++i) {
-          double x = i * 0.05;
-          double y = i * 0.01;
-          double yaw = atan2(0.01, 0.05);
-          auto pose = make_pose(x, y, yaw, now);
-          path.poses.push_back(pose);
-        } 
-        break;
-      }
-      case 2: {
         // Spline "Wide Curve"
-        std::vector<double> X = {0, 1, 2, 3, 4, 5, 6};
-        std::vector<double> Y = {0, 0.2, 0.8, 1.5, 2.2, 2.8, 3.0};
+        std::vector<double> X = {0, 0.5, 1, 1.5, 2, 2.5, 3};
+        std::vector<double> Y = {0, 0.1, 0.4, 0.75, 1.1, 1.4, 1.5};
 
         // default cubic spline (C^2) with natural boundary conditions (f''=0)
         tk::spline s(X,Y);			// X needs to be strictly increasing
-        for (int i = 0; i < 200; ++i) {
-          double x = (6.0 / 200.0) * i;
-          double y = s((6.0 / 200.0) * i);
+        for (int i = 0; i < 100; ++i) {
+          double x = (3.0 / 100.0) * i;
+          double y = s((3.0 / 100.0) * i);
+          double dydx = s.deriv(1, x);        // first derivative dy/dy
+          double yaw  = std::atan2(dydx, 1.0);
+          auto pose = make_pose(x, y, yaw, now);
+          path.poses.push_back(pose);
+        }
+        break;
+      }
+      case 2: {
+        // Spline "Reverse S"
+        std::vector<double> X = {0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4};
+        std::vector<double> Y = {0, 0.4, 0.6, 0.25, 0, -0.25, -0.6, -0.4, 0};
+
+        // default cubic spline (C^2) with natural boundary conditions (f''=0)
+        tk::spline s(X,Y);			// X needs to be strictly increasing
+        for (int i = 0; i < 100; ++i) {
+          double x = (4.0 / 100.0) * i;
+          double y = s((4.0 / 100.0) * i);
           double dydx = s.deriv(1, x);        // first derivative dy/dy
           double yaw  = std::atan2(dydx, 1.0);
           auto pose = make_pose(x, y, yaw, now);
@@ -70,32 +76,15 @@ public:
         break;
       }
       case 3: {
-        // Spline "Reverse S"
-        std::vector<double> X = {0, 1, 2, 3, 4, 5, 6, 7, 8};
-        std::vector<double> Y = {0, 0.8, 1.2, 0.5, 0, -0.5, -1.2, -0.8, 0};
-
-        // default cubic spline (C^2) with natural boundary conditions (f''=0)
-        tk::spline s(X,Y);			// X needs to be strictly increasing
-        for (int i = 0; i < 200; ++i) {
-          double x = (8.0 / 200.0) * i;
-          double y = s((8.0 / 200.0) * i);
-          double dydx = s.deriv(1, x);        // first derivative dy/dy
-          double yaw  = std::atan2(dydx, 1.0);
-          auto pose = make_pose(x, y, yaw, now);
-          path.poses.push_back(pose);
-        }
-        break;
-      }
-      case 4: {
         // Spline "Tight S"
-        std::vector<double> X = {0, 1, 2, 3, 4, 5, 6};
-        std::vector<double> Y = {0, 1, 0.5, -1, -0.5, 1, 0};
+        std::vector<double> X = {0, 0.5, 1, 1.5, 2, 2.5, 3};
+        std::vector<double> Y = {0, 0.5, 0.25, -0.5, -0.25, 0.5, 0};
 
         // default cubic spline (C^2) with natural boundary conditions (f''=0)
         tk::spline s(X,Y);			// X needs to be strictly increasing
-        for (int i = 0; i < 200; ++i) {
-          double x = (6.0 / 200.0) * i;
-          double y = s((6.0 / 200.0) * i);
+        for (int i = 0; i < 100; ++i) {
+          double x = (3.0 / 100.0) * i;
+          double y = s((3.0 / 100.0) * i);
           double dydx = s.deriv(1, x);        // first derivative dy/dy
           double yaw  = std::atan2(dydx, 1.0);
           auto pose = make_pose(x, y, yaw, now);
@@ -114,10 +103,9 @@ public:
 private:
   // Map Index
   // 0: Straight Line
-  // 1: Straight Line variant
-  // 2: Spline "Wide Curve"
-  // 3: Spline "Reverse S"
-  // 4: Spline "Tight S"
+  // 1: Spline "Wide Curve"
+  // 2: Spline "Reverse S"
+  // 3: Spline "Tight S"
   int map;
 
   // Function to create pose message from known data

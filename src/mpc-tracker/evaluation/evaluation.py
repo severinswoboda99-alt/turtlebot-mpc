@@ -39,13 +39,13 @@ def extract_planned(path_msgs):
 
     return xs, ys
 
-# Extract travelled path data, only last message
-def extract_travelled(travelled_msgs):
-    if not travelled_msgs:
+# Extract traveled path data, only last message
+def extract_traveled(traveled_msgs):
+    if not traveled_msgs:
         return [], [], []
 
     # Take ONLY the last message (contains full trajectory)
-    _, msg = travelled_msgs[-1]
+    _, msg = traveled_msgs[-1]
 
     xs, ys = [], []
     for pose_stamped in msg.poses:
@@ -54,7 +54,7 @@ def extract_travelled(travelled_msgs):
 
     return xs, ys, []
 
-# Compute deviation between target and travelled trajectory
+# Compute deviation between target and traveled trajectory
 def compute_error(px, py, tx, ty):
     errors = []
     planned = np.array(list(zip(px, py)))
@@ -64,20 +64,35 @@ def compute_error(px, py, tx, ty):
     return errors
 
 # Plotting Execution
+
+plt.rcParams['font.size'] = '12'
+
 if __name__ == "__main__":
-    bag_path = "/home/swo/turtlebot-mpc/src/mpc-tracker/rosbag2/rosbag2_2026_04_09-15_51_18"  # rosbag2 folder
+    bag_path = "/home/swo/turtlebot-mpc/src/mpc-tracker/rosbag2/rosbag2_2026_04_16-09_22_03"  # rosbag2 folder
     planned = read_bag(bag_path, "/path", "nav_msgs/msg/Path")
-    travelled = read_bag(bag_path, "/travelled_path", "nav_msgs/msg/Path")
+    traveled = read_bag(bag_path, "/traveled_path", "nav_msgs/msg/Path")
 
     px, py = extract_planned(planned)
-    tx, ty, _ = extract_travelled(travelled)
+    tx, ty, _ = extract_traveled(traveled)
 
     errors = compute_error(px, py, tx, ty)
 
+    # Plot planned path
+    # plt.figure()
+    # plt.plot(px, py, linestyle='--', label='Planned Path', color='b')
+    # plt.xlabel("X [m]")
+    # plt.ylabel("Y [m]")
+    # plt.legend()
+    # plt.axis('equal')
+    # plt.title("Path 3")
+    # plt.grid(linewidth = 0.5)
+    # plt.savefig("planned_3.pdf")
+    # plt.show()
+    
     # Plot trajectories
     plt.figure()
-    plt.plot(px, py, linestyle='--', label='Planned Path', color='g')
-    plt.plot(tx, ty, label='Executed Path', color='b')
+    plt.plot(px, py, linestyle='--', label='Planned Path', color='b')
+    plt.plot(tx, ty, label='Executed Path', color='g')
     plt.xlabel("X [m]")
     plt.ylabel("Y [m]")
     plt.legend()

@@ -3,12 +3,12 @@
 #include "nav_msgs/msg/path.hpp"
 #include "geometry_msgs/msg/pose_stamped.hpp"
 
-class TravelledPathPub : public rclcpp::Node
+class traveledPathPub : public rclcpp::Node
 {
 public:
-    TravelledPathPub() : Node("travelled_path")
+    traveledPathPub() : Node("traveled_path")
     {
-        path_pub_ = this->create_publisher<nav_msgs::msg::Path>("/travelled_path", 10);
+        path_pub_ = this->create_publisher<nav_msgs::msg::Path>("/traveled_path", 10);
 
         odom_sub_ = this->create_subscription<nav_msgs::msg::Odometry>(
             "/odom", 10,
@@ -40,7 +40,7 @@ private:
 int main(int argc, char **argv)
 {
     rclcpp::init(argc, argv);
-    rclcpp::spin(std::make_shared<TravelledPathPub>());
+    rclcpp::spin(std::make_shared<traveledPathPub>());
     rclcpp::shutdown();
     return 0;
 }

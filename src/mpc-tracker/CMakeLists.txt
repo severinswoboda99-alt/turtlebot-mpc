@@ -7,6 +7,7 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(eigen3_cmake_module REQUIRED)
@@ -15,7 +16,7 @@ find_package(osqp REQUIRED)
 find_package(OsqpEigen REQUIRED)
 
 add_executable(controller src/controller.cpp)
-ament_target_dependencies(controller rclcpp nav_msgs geometry_msgs Eigen3)
+ament_target_dependencies(controller std_msgs rclcpp nav_msgs geometry_msgs Eigen3)
 target_link_libraries(controller osqp::osqp)
 target_link_libraries(controller OsqpEigen::OsqpEigen)
 
@@ -27,13 +28,13 @@ target_include_directories(path_planner
     include
 )
 
-add_executable(travelled_path src/travelled_path.cpp)
-ament_target_dependencies(travelled_path rclcpp nav_msgs geometry_msgs)
+add_executable(traveled_path src/traveled_path.cpp)
+ament_target_dependencies(traveled_path rclcpp nav_msgs geometry_msgs)
 
 install(TARGETS
   controller
   path_planner
-  travelled_path
+  traveled_path
   DESTINATION lib/${PROJECT_NAME}
 )
 

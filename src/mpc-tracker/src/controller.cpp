@@ -8,6 +8,7 @@
 #include <iostream>
 #include <Eigen/Dense>
 
+#include "std_msgs/msg/float64.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "nav_msgs/msg/odometry.hpp"
 #include "geometry_msgs/msg/twist_stamped.hpp"
@@ -297,10 +298,15 @@ public:
     cmd_pub_ = this->create_publisher<geometry_msgs::msg::TwistStamped>("/cmd_vel", 10);
     // Create Publisher for the local horizon
     horizon_pub_ = this->create_publisher<nav_msgs::msg::Path>("/horizon", 10);
+    // Create Publisher for solve time
+    loop_time_pub_ = this->create_publisher<std_msgs::msg::Float64>("/loop_time", 10);
 
     // Create main timer and corresponding callback function
     auto timer_period = std::chrono::milliseconds(static_cast<int>(delta_t * 1000)); // Conversion to ms
     timer_ = this->create_wall_timer(timer_period, [this]() {
+      // Track time of complete loop
+      auto t0 = std::chrono::steady_clock::now();
+
       // Only drive the robot when the state and reference path have been received, and the start signal has been given
       if (!state_received || !path_received || !start) {
         auto message = geometry_msgs::msg::TwistStamped();
@@ -430,6 +436,13 @@ public:
         return;
       }
 
+      // Solve complete, get time and publish
+      auto t1 = std::chrono::steady_clock::now();
+      double loop_time = std::chrono::duration<double, std::milli>(t1 - t0).count();
+      std_msgs::msg::Float64 msg;
+      msg.data = loop_time;
+      loop_time_pub_->publish(msg);
+
       // OSQP, get solution and clamp output for safety
       Eigen::VectorXd delta_U = solver.getSolution();
       double v_cmd = v_local[0] + delta_U[0];
@@ -524,6 +537,7 @@ private:
     rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub_;
     rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr cmd_pub_;
     rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr horizon_pub_;
+    rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr loop_time_pub_;
     rclcpp::TimerBase::SharedPtr timer_;
     rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr param_cb_handle_;
 };

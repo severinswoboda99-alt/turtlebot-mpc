@@ -45,8 +45,8 @@ def generate_launch_description():
         ),
         Node(
             package="mpc-tracker",
-            executable="travelled_path",
-            name="travelled_path",
+            executable="traveled_path",
+            name="traveled_path",
             output="screen"
         ),
         ExecuteProcess(
