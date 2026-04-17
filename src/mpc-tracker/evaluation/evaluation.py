@@ -13,7 +13,7 @@ def quaternion_to_yaw(q):
 
 def angle_diff(a, b):
     d = a - b
-    return math.atan2(math.sin(d), math.cos(d))
+    return abs(math.atan2(math.sin(d), math.cos(d)))  # Take absolute value
 
 # Read data from rosbag2
 def read_bag(bag_path, topic_name, msg_type_str):
@@ -128,7 +128,7 @@ def compute_heading_error(px, py, pyaw, tx, ty, tyaw):
 
         yaw_p = pyaw[idx]
         err = angle_diff(yaw_t, yaw_p)
-        errors.append(err)
+        errors.append(abs(err))  # Take absolute value here
 
     return np.array(errors)
 
