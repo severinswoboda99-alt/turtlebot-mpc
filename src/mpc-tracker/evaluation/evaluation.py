@@ -141,7 +141,7 @@ def compute_control_effort(v, w):
 plt.rcParams['font.size'] = '12'
 
 if __name__ == "__main__":
-    bag_path = "/home/swo/turtlebot-mpc/src/mpc-tracker/rosbag2/rosbag2_2026_04_17-11_52_02"  # rosbag2 folder
+    bag_path = "/home/swo/turtlebot-mpc/src/mpc-tracker/rosbag2/bag_type_path2_N15_Q1_1_1_1_P1_1_R1_1"  # rosbag2 folder
     planned = read_bag(bag_path, "/path", "nav_msgs/msg/Path")
     traveled = read_bag(bag_path, "/traveled_path", "nav_msgs/msg/Path")
     loop_time = read_bag(bag_path, "/loop_time", "std_msgs/msg/Float64")
@@ -197,26 +197,29 @@ if __name__ == "__main__":
     w_ref_interp = interp1d(t_w_ref, ws_ref, kind='nearest', fill_value='extrapolate')(t_cmd)
 
     # Compute input errors
-    v_errors = v_ref_interp - v_cmd
+    v_errors = np.abs(v_ref_interp - v_cmd)
     print(f"Average linear input error: {np.mean(v_errors):.3f} m/s")
     print(f"Std dev: {np.std(v_errors):.3f} m/s")
     print(f"Max: {np.max(v_errors):.3f} m/s")
     
-    w_errors = w_ref_interp - w_cmd
+    w_errors = np.abs(w_ref_interp - w_cmd)
     print(f"Average angular nput error: {np.mean(w_errors):.3f} m/s")
     print(f"Std dev: {np.std(w_errors):.3f} m/s")
     print(f"Max: {np.max(w_errors):.3f} m/s")
     
     # Control Effort
     dv, dw = compute_control_effort(v_cmd, w_cmd)
+    
+    dv_abs = np.abs(dv)
+    dw_abs = np.abs(dw)
 
-    print(f"Average Δv: {np.mean(dv):.3f} m/s²")
-    print(f"Std dev: {np.std(dv):.3f} m/s²")
-    print(f"Max: {np.max(dv):.3f} m/s²")
+    print(f"Average Δv: {np.mean(dv):.3f} m/s")
+    print(f"Std dev: {np.std(dv):.3f} m/s")
+    print(f"Max: {np.max(dv):.3f} m/s")
 
-    print(f"Average Δw: {np.mean(dw):.3f} rad/s²")
-    print(f"Std dev: {np.std(dw):.3f} rad/s²")
-    print(f"Max: {np.max(dw):.3f} rad/s²")
+    print(f"Average Δw: {np.mean(dw):.3f} rad/s")
+    print(f"Std dev: {np.std(dw):.3f} rad/s")
+    print(f"Max: {np.max(dw):.3f} rad/s")
 
     # Plot planned path
     # plt.figure()
