@@ -9,6 +9,7 @@
 #include <Eigen/Dense>
 
 #include "std_msgs/msg/float64.hpp"
+#include "std_msgs/msg/float64_multi_array.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "nav_msgs/msg/odometry.hpp"
 #include "geometry_msgs/msg/twist_stamped.hpp"
@@ -178,14 +179,14 @@ public:
     this->declare_parameter<bool>("start", false);
     this->declare_parameter<double>("delta_t", 0.1);  // time step size, in s
     this->declare_parameter<int>("N", 15);            // Horizon size
-    this->declare_parameter<double>("q_1", 20.0);
-    this->declare_parameter<double>("q_2", 20.0);
-    this->declare_parameter<double>("q_3", 5.0);
-    this->declare_parameter<double>("p_1", 40.0);
-    this->declare_parameter<double>("p_2", 40.0);
-    this->declare_parameter<double>("p_3", 10.0);
-    this->declare_parameter<double>("r_1", 0.5);
-    this->declare_parameter<double>("r_2", 0.2);
+    this->declare_parameter<double>("q_1", 1.0);
+    this->declare_parameter<double>("q_2", 1.0);
+    this->declare_parameter<double>("q_3", 1.0);
+    this->declare_parameter<double>("p_1", 1.0);
+    this->declare_parameter<double>("p_2", 1.0);
+    this->declare_parameter<double>("p_3", 1.0);
+    this->declare_parameter<double>("r_1", 1.0);
+    this->declare_parameter<double>("r_2", 1.0);
 
     start = this->get_parameter("start").as_bool();
     delta_t = this->get_parameter("delta_t").as_double();
@@ -231,6 +232,13 @@ public:
     // Calculate Q_bar and R_bar from tuning matrices Q, P, R
     Q_bar = calc_Q_bar(Q, P, N);
     R_bar = calc_R_bar(R, N);
+
+    // Create Publisher for the TurtleBot3 movement topic
+    cmd_pub_ = this->create_publisher<geometry_msgs::msg::TwistStamped>("/cmd_vel", 10);
+    // Create Publisher for the local horizon
+    horizon_pub_ = this->create_publisher<nav_msgs::msg::Path>("/horizon", 10);
+    // Create Publisher for solve time
+    loop_time_pub_ = this->create_publisher<std_msgs::msg::Float64>("/loop_time", 10);
 
     // Subscriber to reference trajectory
     auto ref_callback = [this](const nav_msgs::msg::Path & path){
@@ -293,13 +301,6 @@ public:
     };
     odom_sub_ = this->create_subscription<nav_msgs::msg::Odometry>(
       "odom", 10, odom_callback);
-    
-    // Create Publisher for the TurtleBot3 movement topic
-    cmd_pub_ = this->create_publisher<geometry_msgs::msg::TwistStamped>("/cmd_vel", 10);
-    // Create Publisher for the local horizon
-    horizon_pub_ = this->create_publisher<nav_msgs::msg::Path>("/horizon", 10);
-    // Create Publisher for solve time
-    loop_time_pub_ = this->create_publisher<std_msgs::msg::Float64>("/loop_time", 10);
 
     // Create main timer and corresponding callback function
     auto timer_period = std::chrono::milliseconds(static_cast<int>(delta_t * 1000)); // Conversion to ms
