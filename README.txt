@@ -21,9 +21,9 @@ $ ros2 launch mpc-tracker launch.py
 
 ### Record and Plot ###
 $ cd /home/swo/turtlebot-mpc/src/mpc-tracker/rosbag2
-$ ros2 bag record /path /traveled_path /loop_time /cmd_vel
+$ ros2 bag record /path /traveled_path /loop_time /cmd_vel /v_ref /w_ref
 
 Stop recording with CTRL+C
 Update bag path in evaluation.py, then:
-$ cd /home/swo/turtlebot-mpc/src/mpc-tracker/evaluation
+$ cd /home/swo/turtlebot-mpc/src/mpc-tracker/evaluation 
 $ python3 evaluation.py

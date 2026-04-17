@@ -239,6 +239,9 @@ public:
     horizon_pub_ = this->create_publisher<nav_msgs::msg::Path>("/horizon", 10);
     // Create Publisher for solve time
     loop_time_pub_ = this->create_publisher<std_msgs::msg::Float64>("/loop_time", 10);
+    // Create Publisher for inputs
+    v_ref_pub_ = this->create_publisher<std_msgs::msg::Float64>("/v_ref", 10);
+    w_ref_pub_ = this->create_publisher<std_msgs::msg::Float64>("/w_ref", 10);
 
     // Subscriber to reference trajectory
     auto ref_callback = [this](const nav_msgs::msg::Path & path){
@@ -388,6 +391,15 @@ public:
         horizon.poses.push_back(pose);
       }
       horizon_pub_->publish(horizon);
+
+      // Publish the next input for evaluation
+      std_msgs::msg::Float64 v_ref_msg;
+      v_ref_msg.data = v_local[0];
+      v_ref_pub_->publish(v_ref_msg);
+
+      std_msgs::msg::Float64 w_ref_msg;
+      w_ref_msg.data = w_local[0];
+      w_ref_pub_->publish(w_ref_msg);
 
       // Calculate A_stacked and B_stacked from local horizon trajectory data
       Eigen::MatrixXd A_stacked = calc_A_stacked(theta_local, v_local, delta_t, N);
@@ -539,6 +551,8 @@ private:
     rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr cmd_pub_;
     rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr horizon_pub_;
     rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr loop_time_pub_;
+    rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr v_ref_pub_;
+    rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr w_ref_pub_;
     rclcpp::TimerBase::SharedPtr timer_;
     rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr param_cb_handle_;
 };

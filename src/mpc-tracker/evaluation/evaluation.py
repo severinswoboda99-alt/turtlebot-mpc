@@ -3,6 +3,7 @@ from rclpy.serialization import deserialize_message
 from rosidl_runtime_py.utilities import get_message
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy.interpolate import interp1d
 import math
 
 def quaternion_to_yaw(q):
@@ -83,12 +84,14 @@ def extract_traveled(traveled_msgs, movement_threshold=0.01):
 
     return np.array(xs), np.array(ys), np.array(yaws)
 
-# Extract computing time data
-def extract_loop_time(loop_msgs):
-    times = []
-    for _, msg in loop_msgs:
-        times.append(msg.data)
-    return np.array(times)
+# Extract Float64 data (loop time, velocities)
+def extract_float64(fl_msgs):
+    times, fl = [], []
+    for t, msg in fl_msgs:
+        times.append(t)
+        fl.append(msg.data)
+    return np.array(times), np.array(fl)
+
 
 # Extract inputs
 def extract_cmd_vel(cmd_vel_msgs, threshold=1e-6):
@@ -138,19 +141,23 @@ def compute_control_effort(v, w):
 plt.rcParams['font.size'] = '12'
 
 if __name__ == "__main__":
-    bag_path = "/home/swo/turtlebot-mpc/src/mpc-tracker/rosbag2/rosbag2_2026_04_17-11_10_40"  # rosbag2 folder
+    bag_path = "/home/swo/turtlebot-mpc/src/mpc-tracker/rosbag2/rosbag2_2026_04_17-11_52_02"  # rosbag2 folder
     planned = read_bag(bag_path, "/path", "nav_msgs/msg/Path")
     traveled = read_bag(bag_path, "/traveled_path", "nav_msgs/msg/Path")
     loop_time = read_bag(bag_path, "/loop_time", "std_msgs/msg/Float64")
     cmd_vel = read_bag(bag_path, "/cmd_vel", "geometry_msgs/msg/TwistStamped")
+    v_ref = read_bag(bag_path, "/v_ref", "std_msgs/msg/Float64")
+    w_ref = read_bag(bag_path, "/w_ref", "std_msgs/msg/Float64")
     
     px, py, pyaw = extract_planned(planned)
     tx, ty, tyaw = extract_traveled(traveled)
-    t_l = extract_loop_time(loop_time)
+    t_l_times, t_l_values = extract_float64(loop_time)
+    t_v_ref, vs_ref = extract_float64(v_ref)
+    t_w_ref, ws_ref = extract_float64(w_ref)
     t_cmd, v_cmd, w_cmd = extract_cmd_vel(cmd_vel)
     
     # Computing Time per Loop
-    filtered = t_l[t_l < np.percentile(t_l, 99)]
+    filtered = t_l_values[t_l_values < np.percentile(t_l_values, 99)]
     avg_time = np.mean(filtered)
     std_time = np.std(filtered)
     max_time = np.max(filtered)
@@ -184,9 +191,23 @@ if __name__ == "__main__":
     print(f"Std dev: {std_heading_error:.3f} deg")
     print(f"Max: {max_heading_error:.3f} deg")
     
+    # Control Error
+    # Interpolate reference inputs to match cmd_vel timestamps
+    v_ref_interp = interp1d(t_v_ref, vs_ref, kind='nearest', fill_value='extrapolate')(t_cmd)
+    w_ref_interp = interp1d(t_w_ref, ws_ref, kind='nearest', fill_value='extrapolate')(t_cmd)
+
+    # Compute input errors
+    v_errors = v_ref_interp - v_cmd
+    print(f"Average linear input error: {np.mean(v_errors):.3f} m/s")
+    print(f"Std dev: {np.std(v_errors):.3f} m/s")
+    print(f"Max: {np.max(v_errors):.3f} m/s")
+    
+    w_errors = w_ref_interp - w_cmd
+    print(f"Average angular nput error: {np.mean(w_errors):.3f} m/s")
+    print(f"Std dev: {np.std(w_errors):.3f} m/s")
+    print(f"Max: {np.max(w_errors):.3f} m/s")
+    
     # Control Effort
-    print("First 5 v_actual:", v_cmd[:5])
-    print("First 5 w_actual:", w_cmd[:5])
     dv, dw = compute_control_effort(v_cmd, w_cmd)
 
     print(f"Average Δv: {np.mean(dv):.3f} m/s²")
@@ -210,27 +231,28 @@ if __name__ == "__main__":
     # plt.show()
     
     # Plot trajectories
-    # plt.figure()
-    # plt.plot(px, py, linestyle='--', label='Planned Path', color='b')
-    # plt.plot(tx, ty, label='Robot Trajectory', color='crimson')
-    # plt.xlabel("X [m]")
-    # plt.ylabel("Y [m]")
-    # plt.legend()
-    # plt.axis('equal')
-    # plt.title("Trajectory-Path Comparison")
-    # plt.grid(linewidth = 0.5)
-    # plt.savefig("trajectory_comp.pdf")
-    # plt.show()
+    plt.figure()
+    plt.plot(px, py, linestyle='--', label='Planned Path', color='b')
+    plt.plot(tx, ty, label='Robot Trajectory', color='crimson')
+    plt.xlabel("X [m]")
+    plt.ylabel("Y [m]")
+    plt.legend()
+    plt.axis('equal')
+    plt.title("Trajectory-Path Comparison")
+    plt.grid(linewidth = 0.5)
+    plt.savefig("trajectory_comp.pdf")
+    plt.show()
     
-    # # Plot computing loop time
-    # plt.figure()
-    # plt.plot(filtered, color='turquoise')
-    # plt.axhline(y=avg_time, color='r', linestyle='-')
-    # plt.xlabel("Time index")
-    # plt.ylabel("Time [ms]")
-    # plt.title("Computing Time")
-    # plt.savefig("loop_time_plot.pdf")
-    # plt.show()
+    # Plot computing loop time
+    plt.figure()
+    plt.plot(filtered, color='turquoise')
+    plt.axhline(y=avg_time, color='r', linestyle='-')
+    plt.xlabel("Time index")
+    plt.ylabel("Time [ms]")
+    plt.title("Computing Time")
+    plt.grid(linewidth = 0.5)
+    plt.savefig("loop_time_plot.pdf")
+    plt.show()
     
     # # Histogram loop time
     # plt.figure()
@@ -242,15 +264,17 @@ if __name__ == "__main__":
     # plt.savefig("loop_time_hist.pdf")
     # plt.show()
     
-    # # Plot position error
-    # plt.figure()
-    # plt.plot(pos_errors, color='blueviolet')
-    # plt.axhline(y=avg_pos_error, color='r', linestyle='-')
-    # plt.xlabel("Time index")
-    # plt.ylabel("Deviation [m]")
-    # plt.title("Position Error")
-    # plt.savefig("pos_error_plot.pdf")
-    # plt.show()
+    # Plot position error
+    plt.figure()
+    plt.plot(pos_errors, color='blueviolet')
+    plt.axhline(y=avg_pos_error, color='r', linestyle='-')
+    plt.axhline(y=0, color='k', linestyle='--')
+    plt.xlabel("Time index")
+    plt.ylabel("Deviation [m]")
+    plt.title("Position Error")
+    plt.grid(linewidth = 0.5)
+    plt.savefig("pos_error_plot.pdf")
+    plt.show()
     
     # # Histogram position error
     # plt.figure()
@@ -262,16 +286,17 @@ if __name__ == "__main__":
     # plt.savefig("pos_error_hist.pdf")
     # plt.show()
     
-    # # Plot heading error
-    # plt.figure()
-    # plt.plot(heading_errors_deg, color='slateblue')
-    # plt.axhline(y=avg_heading_error, color='r', linestyle='-')
-    # plt.xlabel("Time index")
-    # plt.ylabel("Deviation [deg]")
-    # plt.title("Heading Error")
-    # plt.grid()
-    # plt.savefig("heading_error_plot.pdf")
-    # plt.show()
+    # Plot heading error
+    plt.figure()
+    plt.plot(heading_errors_deg, color='slateblue')
+    plt.axhline(y=avg_heading_error, color='r', linestyle='-')
+    plt.axhline(y=0, color='k', linestyle='--')
+    plt.xlabel("Time index")
+    plt.ylabel("Deviation [deg]")
+    plt.title("Heading Error")
+    plt.grid()
+    plt.savefig("heading_error_plot.pdf")
+    plt.show()
     
     # # Histogram heading error
     # plt.figure()
@@ -285,13 +310,46 @@ if __name__ == "__main__":
     
     # Plot control effort
     plt.figure()
-    plt.plot(t_cmd[1:], dv, label='Δv', color='blue')
-    plt.plot(t_cmd[1:], dw, label='Δw', color='red')
+    plt.plot(t_cmd[1:], dv, color='darkslateblue')
+    plt.axhline(y=np.mean(dv), color='r', linestyle='-')
     plt.axhline(y=0, color='k', linestyle='--')
     plt.xlabel("Time [s]")
-    plt.ylabel("Control Effort")
-    plt.title("Control Effort (Input Deltas)")
-    plt.legend()
+    plt.ylabel("Control Effort [m/s]")
+    plt.title("Linear Control Effort")
     plt.grid()
-    plt.savefig("control_effort.pdf")
+    plt.savefig("linear_control_effort.pdf")
+    plt.show()
+    
+    plt.figure()
+    plt.plot(t_cmd[1:], dw, color='mediumslateblue')
+    plt.axhline(y=np.mean(dw), color='r', linestyle='-')
+    plt.axhline(y=0, color='k', linestyle='--')
+    plt.xlabel("Time [s]")
+    plt.ylabel("Control Effort [rad/s]")
+    plt.title("Angular Control Effort")
+    plt.grid()
+    plt.savefig("angular_control_effort.pdf")
+    plt.show()
+    
+    # Plot input errors
+    plt.figure()
+    plt.plot(t_cmd, v_errors, color='midnightblue')
+    plt.axhline(y=np.mean(v_errors), color='r', linestyle='-')
+    plt.axhline(y=0, color='k', linestyle='--')
+    plt.xlabel("Time [s]")
+    plt.ylabel("Velocity Error [m/s]")
+    plt.title("Linear Velocity Input Error")
+    plt.grid()
+    plt.savefig("linear_input_error.pdf")
+    plt.show()
+    
+    plt.figure()
+    plt.plot(t_cmd, w_errors, color='darkblue')
+    plt.axhline(y=np.mean(w_errors), color='r', linestyle='-')
+    plt.axhline(y=0, color='k', linestyle='--')
+    plt.xlabel("Time [s]")
+    plt.ylabel("Velocity Error [rad/s]")
+    plt.title("Angular Velocity Input Error")
+    plt.grid()
+    plt.savefig("angular_input_error.pdf")
     plt.show()
