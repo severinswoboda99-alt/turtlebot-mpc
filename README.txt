@@ -28,3 +28,5 @@ Stop recording with CTRL+C
 Update bag path in evaluation.py, then:
 $ cd /home/swo/turtlebot-mpc/src/mpc-tracker/evaluation 
 $ python3 evaluation.py
+Or, respectively
+$ python3 summary_plots

@@ -35,7 +35,7 @@ double angle_wrap(double alpha){
 }
 
 // Function to find the index of the currently closest refernce path point
-int closest_index(double x, double y, std::vector<double> x_ref, std::vector<double> y_ref) {
+int closest_index(double x, double y, const std::vector<double>& x_ref, const std::vector<double>& y_ref) {
   double min_dist = std::numeric_limits<double>::max();
   int index = 0;
 
@@ -205,21 +205,11 @@ public:
 
     // Initialize member variables
     state_received = false;
-    path_received = false;
     solver_initialized = false;
     delta_X_0 = Eigen::Vector3d::Zero();
 
-    // Tuning Parameters 
-    Q << q_1, 0, 0,
-        0, q_2, 0,
-        0, 0, q_3;
-
-    P << p_1, 0, 0,
-        0, p_2, 0,
-        0, 0, p_3;
-
-    R << r_1, 0,
-        0, r_2;
+    // Tuning Parameters
+    rebuild_cost_matrices();
 
       // OSQP:Eigen Initialization
     solver.settings()->setVerbosity(false);
@@ -286,7 +276,14 @@ public:
         w_ref.push_back(w);
       }
 
-      this->path_received = true;
+      // Keep input vectors aligned with state vectors for safe horizon indexing
+      if (size >= 2) {
+        v_ref.push_back(v_ref.back());
+        w_ref.push_back(w_ref.back());
+      } else if (size == 1) {
+        v_ref.push_back(0.0);
+        w_ref.push_back(0.0);
+      }
     };
     path_sub_ = this->create_subscription<nav_msgs::msg::Path>(
       "/path", 10, ref_callback);
@@ -312,18 +309,29 @@ public:
       auto t0 = std::chrono::steady_clock::now();
 
       // Only drive the robot when the state and reference path have been received, and the start signal has been given
-      if (!state_received || !path_received || !start) {
+      if (!state_received || !start) {
         auto message = geometry_msgs::msg::TwistStamped();
         message.twist.linear.x = 0.0;
         message.twist.angular.z = 0.0;
-        RCLCPP_INFO(this->get_logger(), "Stopped: Waiting for Path, State or Start Data");
+        RCLCPP_INFO(this->get_logger(), "Stopped: Waiting for State or Start Data");
+        cmd_pub_->publish(message);
+        return;
+      }
+
+      // Check for reference data before continuing to main loop
+      if (x_ref.empty() || y_ref.empty() || theta_ref.empty() || v_ref.empty() || w_ref.empty()) {
+        auto message = geometry_msgs::msg::TwistStamped();
+        message.twist.linear.x = 0.0;
+        message.twist.angular.z = 0.0;
+        RCLCPP_WARN(this->get_logger(), "Stopped: Incomplete Reference Data");
         cmd_pub_->publish(message);
         return;
       }
 
       // Main MPC loop
-      // Create Local Horizon, up to N steps, starting from the nearest reference point i_c
-      int i_c = closest_index(x, y, x_ref, y_ref);
+      // Controller has reference data, current state and the start signal
+      // Create Local Horizon, up to N steps, starting from the nearest reference point idx
+      int idx = closest_index(x, y, x_ref, y_ref);
   
       // Check if robot is near the end of the path (5 cm), and stop, if necessary
       double dx = x - x_ref.back();
@@ -347,18 +355,20 @@ public:
       // by projecting the robots movement forwards, resulting in the local horizon vectors:
       std::vector<double> x_local, y_local, theta_local, v_local, w_local;
 
-      int idx = i_c;
       double total_dist = 0.0;
 
       for (int k = 0; k < N; ++k) {
-        x_local.push_back(x_ref[idx]);
-        y_local.push_back(y_ref[idx]);
-        theta_local.push_back(theta_ref[idx]);
-        v_local.push_back(v_ref[idx]);
-        w_local.push_back(w_ref[idx]);
+        const int idx_state = std::clamp(idx, 0, static_cast<int>(x_ref.size()) - 1);
+        const int idx_input = std::clamp(idx, 0, static_cast<int>(v_ref.size()) - 1);
+
+        x_local.push_back(x_ref[idx_state]);
+        y_local.push_back(y_ref[idx_state]);
+        theta_local.push_back(theta_ref[idx_state]);
+        v_local.push_back(v_ref[idx_input]);
+        w_local.push_back(w_ref[idx_input]);
 
           // Target distance for next step
-        double target_dist = v_ref[idx] * delta_t;
+        double target_dist = std::max(0.0, v_ref[idx_input] * delta_t);
 
         total_dist = 0.0;
 
@@ -474,8 +484,26 @@ public:
   }
 
 private:
+  // (Re-)Build cost matrices during initialisation or after parameter change
+  void rebuild_cost_matrices() {
+    Q << q_1, 0, 0,
+      0, q_2, 0,
+      0, 0, q_3;
+
+    P << p_1, 0, 0,
+      0, p_2, 0,
+      0, 0, p_3;
+
+    R << r_1, 0,
+      0, r_2;
+
+    Q_bar = calc_Q_bar(Q, P, N);
+    R_bar = calc_R_bar(R, N);
+    RCLCPP_INFO(this->get_logger(), "Rebuild successful, Data Updated!");
+  }
+
     // Safety flag
-    bool state_received, path_received, start;
+    bool state_received, start;
     // Current state
     double x, y, theta;
     // Reference State and Input
@@ -500,6 +528,8 @@ private:
     on_param_set(const std::vector<rclcpp::Parameter> &params) {
       rcl_interfaces::msg::SetParametersResult res;
       res.successful = true;
+      bool weights_changed = false;
+      bool horizon_changed = false;
 
       for (const auto &param : params) {
       const std::string &name = param.get_name();
@@ -510,39 +540,52 @@ private:
         delta_t = param.as_double();
       } else if (name == "N") {
         N = param.as_int();
-
-        // Rebuild MPC structures
-        Q_bar = calc_Q_bar(Q, P, N);
-        R_bar = calc_R_bar(R, N);
-        A_sparse = Eigen::MatrixXd::Identity(2*N, 2*N).sparseView();
-
-        // Reset solver
-        solver.clearSolver();
-        solver.data()->setNumberOfVariables(2*N);
-        solver.data()->setNumberOfConstraints(2*N);
-
-        solver_initialized = false;
+        horizon_changed = true;
       } else if (name == "q_1") {
         q_1 = param.as_double();
+        weights_changed = true;
       } else if (name == "q_2") {
         q_2 = param.as_double();
+        weights_changed = true;
       } else if (name == "q_3") {
         q_3 = param.as_double();
+        weights_changed = true;
       } else if (name == "p_1") {
         p_1 = param.as_double();
+        weights_changed = true;
       } else if (name == "p_2") {
         p_2 = param.as_double();
+        weights_changed = true;
       } else if (name == "p_3") {
         p_3 = param.as_double();
+        weights_changed = true;
       } else if (name == "r_1") {
         r_1 = param.as_double();
+        weights_changed = true;
       } else if (name == "r_2") {
         r_2 = param.as_double();
+        weights_changed = true;
       } else {
         res.successful = false;
         res.reason = "Unknown parameter: " + name;
       }
     }
+
+    // The matrices and/or solver might need to be rebuilt after parameter change!
+    if (weights_changed || horizon_changed) {
+      rebuild_cost_matrices();
+    }
+
+    if (horizon_changed) {
+      A_sparse = Eigen::MatrixXd::Identity(2*N, 2*N).sparseView();
+
+      // Reset solver dimensions for new horizon.
+      solver.clearSolver();
+      solver.data()->setNumberOfVariables(2*N);
+      solver.data()->setNumberOfConstraints(2*N);
+      solver_initialized = false;
+    }
+
     return res;
     }
 

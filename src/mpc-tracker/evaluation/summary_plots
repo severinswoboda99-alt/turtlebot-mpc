@@ -1,0 +1,26 @@
+import matplotlib.pyplot as plt
+
+# Plotting Execution
+plt.rcParams['font.size'] = '12'
+
+if __name__ == "__main__":
+    # Plot summarized horizon size data
+    # Horizon sizes
+    N = [10, 15, 20, 25, 30, 35, 40, 45, 50]
+    # Average solve times (ms)
+    solve_time = [1.670, 4.689, 9.956, 19.131, 31.304, 48.803, 72.782, 104.327, 140.941]
+    # Maximum solve times (ms)
+    max_time = [2.353, 5.965, 12.319, 28.153, 36.450, 59.900, 85.530, 124.498, 163.455]
+    # Standard deviation (ms)
+    std_dev = [0.504, 0.204, 0.938, 1.980, 1.826, 2.328, 3.786, 4.650, 7.432]
+    
+    plt.figure()
+    plt.errorbar(N, solve_time, yerr=std_dev, fmt='o-', capsize=4, label='Mean Solve Time ±1σ', color='blue')
+    plt.plot(N, max_time, marker='o', label='Maximum Time', color='goldenrod')
+    plt.xlabel('MPC Horizon (N)')
+    plt.ylabel('Time (ms)')
+    plt.legend()
+    plt.title('Effect of MPC Horizon on Solve Time')
+    plt.grid()
+    plt.savefig("horizon_solve_time_summary.pdf")
+    plt.show()

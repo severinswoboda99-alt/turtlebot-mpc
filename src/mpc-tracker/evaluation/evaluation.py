@@ -141,7 +141,7 @@ def compute_control_effort(v, w):
 plt.rcParams['font.size'] = '12'
 
 if __name__ == "__main__":
-    bag_path = "/home/swo/turtlebot-mpc/src/mpc-tracker/rosbag2/bag_type_path2_N30_Q40_40_40_40_P40_40_R0.1_0.1"  # rosbag2 folder
+    bag_path = "/home/swo/turtlebot-mpc/src/mpc-tracker/rosbag2/bag_type_path0_N50_Q1_1_1_P1_1_1_R1_1"  # rosbag2 folder
     planned = read_bag(bag_path, "/path", "nav_msgs/msg/Path")
     traveled = read_bag(bag_path, "/traveled_path", "nav_msgs/msg/Path")
     loop_time = read_bag(bag_path, "/loop_time", "std_msgs/msg/Float64")
@@ -203,7 +203,7 @@ if __name__ == "__main__":
     print(f"Max: {np.max(v_errors):.3f} m/s")
     
     w_errors = np.abs(w_ref_interp - w_cmd)
-    print(f"Average angular nput error: {np.mean(w_errors):.3f} m/s")
+    print(f"Average angular input error: {np.mean(w_errors):.3f} m/s")
     print(f"Std dev: {np.std(w_errors):.3f} m/s")
     print(f"Max: {np.max(w_errors):.3f} m/s")
     
@@ -222,16 +222,16 @@ if __name__ == "__main__":
     print(f"Max: {np.max(dw):.3f} rad/s")
 
     # Plot planned path
-    # plt.figure()
-    # plt.plot(px, py, linestyle='--', label='Planned Path', color='b')
-    # plt.xlabel("X [m]")
-    # plt.ylabel("Y [m]")
-    # plt.legend()
-    # plt.axis('equal')
-    # plt.title("Path 3")
-    # plt.grid(linewidth = 0.5)
-    # plt.savefig("planned_3.pdf")
-    # plt.show()
+    plt.figure()
+    plt.plot(px, py, linestyle='--', label='Planned Path', color='b')
+    plt.xlabel("X [m]")
+    plt.ylabel("Y [m]")
+    plt.legend()
+    plt.axis('equal')
+    plt.title("Path 3")
+    plt.grid(linewidth = 0.5)
+    plt.savefig("planned_3.pdf")
+    plt.show()
     
     # Plot trajectories
     plt.figure()
@@ -252,20 +252,20 @@ if __name__ == "__main__":
     plt.axhline(y=avg_time, color='r', linestyle='-')
     plt.xlabel("Time index")
     plt.ylabel("Time [ms]")
-    plt.title("Computing Time")
+    plt.title("Computing Time, N = 50")
     plt.grid(linewidth = 0.5)
-    plt.savefig("loop_time_plot.pdf")
+    plt.savefig("loop_time_plot_N50.pdf")
     plt.show()
     
-    # # Histogram loop time
-    # plt.figure()
-    # plt.hist(filtered, bins=30, color='lightseagreen')
-    # plt.xlabel("Time [ms]")
-    # plt.ylabel("Frequency")
-    # plt.title("Computing Time Distribution")
-    # plt.grid()
-    # plt.savefig("loop_time_hist.pdf")
-    # plt.show()
+    # Histogram loop time
+    plt.figure()
+    plt.hist(filtered, bins=30, color='lightseagreen')
+    plt.xlabel("Time [ms]")
+    plt.ylabel("Frequency")
+    plt.title("Computing Time Distribution, N = 50")
+    plt.grid()
+    plt.savefig("loop_time_hist_N50.pdf")
+    plt.show()
     
     # Plot position error
     plt.figure()
