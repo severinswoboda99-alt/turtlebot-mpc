@@ -6,6 +6,7 @@ install/
 log/
 *.pyc
 __pycache__/
+src/mpc-tracker/rosbag2/
 
 # ===============================
 # Generated config files

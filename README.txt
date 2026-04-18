@@ -21,8 +21,8 @@ $ ros2 launch mpc-tracker launch.py
 
 ### Record and Plot ###
 $ cd /home/swo/turtlebot-mpc/src/mpc-tracker/rosbag2
-$ ros2 bag record -o bag_type_path0_N15_Q1_1_1_1_P1_1_R1_1 /path /traveled_path /loop_time /cmd_vel /v_ref /w_ref
-FILENAME syntax: bag_type_pathX_N(n)_Q(q1,q2,q3,q4)_P(p1,p2)_R(r1,r2)
+$ ros2 bag record -o bag_type_path0_N15_Q1_1_1_P1_1_1_R1_1 /path /traveled_path /loop_time /cmd_vel /v_ref /w_ref
+FILENAME syntax: bag_type_pathX_Nn_Qq1_q2_q3_Pp1_p2_p3_Rr1_r2
 
 Stop recording with CTRL+C
 Update bag path in evaluation.py, then:

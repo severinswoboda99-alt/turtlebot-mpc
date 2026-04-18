@@ -141,7 +141,7 @@ def compute_control_effort(v, w):
 plt.rcParams['font.size'] = '12'
 
 if __name__ == "__main__":
-    bag_path = "/home/swo/turtlebot-mpc/src/mpc-tracker/rosbag2/bag_type_path2_N15_Q1_1_1_1_P1_1_R1_1"  # rosbag2 folder
+    bag_path = "/home/swo/turtlebot-mpc/src/mpc-tracker/rosbag2/bag_type_path2_N30_Q40_40_40_40_P40_40_R0.1_0.1"  # rosbag2 folder
     planned = read_bag(bag_path, "/path", "nav_msgs/msg/Path")
     traveled = read_bag(bag_path, "/traveled_path", "nav_msgs/msg/Path")
     loop_time = read_bag(bag_path, "/loop_time", "std_msgs/msg/Float64")
