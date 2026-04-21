@@ -8,6 +8,8 @@ log/
 __pycache__/
 src/mpc-tracker/rosbag2/
 src/mpc-tracker/evaluation/Horizon Size Computing Time
+src/mpc-tracker/evaluation/Path Planner
+src/mpc-tracker/evaluation/WM Run 1
 
 # ===============================
 # Generated config files

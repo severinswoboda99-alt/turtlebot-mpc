@@ -141,7 +141,7 @@ def compute_control_effort(v, w):
 plt.rcParams['font.size'] = '12'
 
 if __name__ == "__main__":
-    bag_path = "/home/swo/turtlebot-mpc/src/mpc-tracker/rosbag2/bag_type_path0_N50_Q1_1_1_P1_1_1_R1_1"  # rosbag2 folder
+    bag_path = "/home/swo/turtlebot-mpc/src/mpc-tracker/rosbag2/WM Run 1 bag/bag_type_path3_N20_Q1_1_1_P1_1_1_R1_1"  # rosbag2 folder
     planned = read_bag(bag_path, "/path", "nav_msgs/msg/Path")
     traveled = read_bag(bag_path, "/traveled_path", "nav_msgs/msg/Path")
     loop_time = read_bag(bag_path, "/loop_time", "std_msgs/msg/Float64")
@@ -155,6 +155,12 @@ if __name__ == "__main__":
     t_v_ref, vs_ref = extract_float64(v_ref)
     t_w_ref, ws_ref = extract_float64(w_ref)
     t_cmd, v_cmd, w_cmd = extract_cmd_vel(cmd_vel)
+    
+    # Naming Parameters
+    P = 3
+    N = 20
+    run = 1
+    print(f"Run Number: {run}")
     
     # Computing Time per Loop
     filtered = t_l_values[t_l_values < np.percentile(t_l_values, 99)]
@@ -222,16 +228,21 @@ if __name__ == "__main__":
     print(f"Max: {np.max(dw):.3f} rad/s")
 
     # Plot planned path
-    plt.figure()
-    plt.plot(px, py, linestyle='--', label='Planned Path', color='b')
-    plt.xlabel("X [m]")
-    plt.ylabel("Y [m]")
-    plt.legend()
-    plt.axis('equal')
-    plt.title("Path 3")
-    plt.grid(linewidth = 0.5)
-    plt.savefig("planned_3.pdf")
-    plt.show()
+    # Spline Points
+    # x_spline = [0, 0.5, 1, 1.5, 2, 2.5, 3]
+    # y_spline = [0, 0.5, 0.25, -0.5, -0.25, 0.5, 0]
+    
+    # plt.figure()
+    # plt.plot(px, py, linestyle='--', label='Planned Path', color='b')
+    # plt.scatter(x_spline, y_spline, label='Spline Points', color='r')
+    # plt.xlabel("X [m]")
+    # plt.ylabel("Y [m]")
+    # plt.legend()
+    # plt.axis('equal')
+    # plt.title("Path 3")
+    # plt.grid(linewidth = 0.5)
+    # plt.savefig("planned_3.pdf")
+    # plt.show()
     
     # Plot trajectories
     plt.figure()
@@ -241,31 +252,31 @@ if __name__ == "__main__":
     plt.ylabel("Y [m]")
     plt.legend()
     plt.axis('equal')
-    plt.title("Trajectory-Path Comparison")
+    plt.title(f"Path Comparison, Run {run}, Path {P}")
     plt.grid(linewidth = 0.5)
-    plt.savefig("trajectory_comp.pdf")
+    plt.savefig(f"trajectory_comp_R{run}_P{P}.pdf")
     plt.show()
     
-    # Plot computing loop time
-    plt.figure()
-    plt.plot(filtered, color='turquoise')
-    plt.axhline(y=avg_time, color='r', linestyle='-')
-    plt.xlabel("Time index")
-    plt.ylabel("Time [ms]")
-    plt.title("Computing Time, N = 50")
-    plt.grid(linewidth = 0.5)
-    plt.savefig("loop_time_plot_N50.pdf")
-    plt.show()
+    # # Plot computing loop time
+    # plt.figure()
+    # plt.plot(filtered, color='turquoise')
+    # plt.axhline(y=avg_time, color='r', linestyle='-')
+    # plt.xlabel("Time index")
+    # plt.ylabel("Time [ms]")
+    # plt.title("Computing Time, N = 50, Path 3")
+    # plt.grid(linewidth = 0.5)
+    # plt.savefig("loop_time_plot_N50_P3.pdf")
+    # plt.show()
     
-    # Histogram loop time
-    plt.figure()
-    plt.hist(filtered, bins=30, color='lightseagreen')
-    plt.xlabel("Time [ms]")
-    plt.ylabel("Frequency")
-    plt.title("Computing Time Distribution, N = 50")
-    plt.grid()
-    plt.savefig("loop_time_hist_N50.pdf")
-    plt.show()
+    # # Histogram loop time
+    # plt.figure()
+    # plt.hist(filtered, bins=30, color='lightseagreen')
+    # plt.xlabel("Time [ms]")
+    # plt.ylabel("Frequency")
+    # plt.title("Computing Time Distribution, N = 50")
+    # plt.grid()
+    # plt.savefig("loop_time_hist_N50.pdf")
+    # plt.show()
     
     # Plot position error
     plt.figure()
@@ -274,9 +285,9 @@ if __name__ == "__main__":
     plt.axhline(y=0, color='k', linestyle='--')
     plt.xlabel("Time index")
     plt.ylabel("Deviation [m]")
-    plt.title("Position Error")
+    plt.title(f"Position Error, Run {run}, Path {P}")
     plt.grid(linewidth = 0.5)
-    plt.savefig("pos_error_plot.pdf")
+    plt.savefig(f"pos_error_plot_R{run}_P{P}.pdf")
     plt.show()
     
     # # Histogram position error
@@ -296,9 +307,9 @@ if __name__ == "__main__":
     plt.axhline(y=0, color='k', linestyle='--')
     plt.xlabel("Time index")
     plt.ylabel("Deviation [deg]")
-    plt.title("Heading Error")
+    plt.title(f"Heading Error, Run {run}, Path {P}")
     plt.grid()
-    plt.savefig("heading_error_plot.pdf")
+    plt.savefig(f"heading_error_plot_R{run}_P{P}.pdf")
     plt.show()
     
     # # Histogram heading error
@@ -311,48 +322,84 @@ if __name__ == "__main__":
     # plt.savefig("heading_error_hist.pdf")
     # plt.show()
     
-    # Plot control effort
-    plt.figure()
-    plt.plot(t_cmd[1:], dv, color='darkslateblue')
-    plt.axhline(y=np.mean(dv), color='r', linestyle='-')
-    plt.axhline(y=0, color='k', linestyle='--')
-    plt.xlabel("Time [s]")
-    plt.ylabel("Control Effort [m/s]")
-    plt.title("Linear Control Effort")
-    plt.grid()
-    plt.savefig("linear_control_effort.pdf")
-    plt.show()
+    # # Plot control effort
+    # plt.figure()
+    # plt.plot(t_cmd[1:], dv, color='darkslateblue')
+    # plt.axhline(y=np.mean(dv), color='r', linestyle='-')
+    # plt.axhline(y=0, color='k', linestyle='--')
+    # plt.xlabel("Time [s]")
+    # plt.ylabel("Control Effort [m/s]")
+    # plt.title(f"Linear Control Effort, Run {run}, Path {P}")
+    # plt.grid()
+    # plt.savefig(f"linear_control_effort_R{run}_P{P}.pdf")
+    # plt.show()
     
     plt.figure()
-    plt.plot(t_cmd[1:], dw, color='mediumslateblue')
-    plt.axhline(y=np.mean(dw), color='r', linestyle='-')
-    plt.axhline(y=0, color='k', linestyle='--')
-    plt.xlabel("Time [s]")
-    plt.ylabel("Control Effort [rad/s]")
-    plt.title("Angular Control Effort")
+    plt.hist(dv, bins=30, color='darkslateblue')
+    plt.xlabel("Control Effort [m/s]")
+    plt.ylabel("Frequency")
+    plt.title(f"Linear Control Effort, Run {run}, Path {P}")
     plt.grid()
-    plt.savefig("angular_control_effort.pdf")
+    plt.savefig(f"linear_control_effort_R{run}_P{P}.pdf")
     plt.show()
     
-    # Plot input errors
-    plt.figure()
-    plt.plot(t_cmd, v_errors, color='midnightblue')
-    plt.axhline(y=np.mean(v_errors), color='r', linestyle='-')
-    plt.axhline(y=0, color='k', linestyle='--')
-    plt.xlabel("Time [s]")
-    plt.ylabel("Velocity Error [m/s]")
-    plt.title("Linear Velocity Input Error")
-    plt.grid()
-    plt.savefig("linear_input_error.pdf")
-    plt.show()
+    # plt.figure()
+    # plt.plot(t_cmd[1:], dw, color='mediumslateblue')
+    # plt.axhline(y=np.mean(dw), color='r', linestyle='-')
+    # plt.axhline(y=0, color='k', linestyle='--')
+    # plt.xlabel("Time [s]")
+    # plt.ylabel("Control Effort [rad/s]")
+    # plt.title(f"Angular Control Effort, Run {run}, Path {P}")
+    # plt.grid()
+    # plt.savefig(f"angular_control_effort_R{run}_P{P}.pdf")
+    # plt.show()
     
     plt.figure()
-    plt.plot(t_cmd, w_errors, color='darkblue')
-    plt.axhline(y=np.mean(w_errors), color='r', linestyle='-')
-    plt.axhline(y=0, color='k', linestyle='--')
-    plt.xlabel("Time [s]")
-    plt.ylabel("Velocity Error [rad/s]")
-    plt.title("Angular Velocity Input Error")
+    plt.hist(dw, bins=30, color='mediumslateblue')
+    plt.xlabel("Control Effort [rad/s]")
+    plt.ylabel("Frequency")
+    plt.title(f"Angular Control Effort, Run {run}, Path {P}")
     plt.grid()
-    plt.savefig("angular_input_error.pdf")
+    plt.savefig(f"angular_control_effort_R{run}_P{P}.pdf")
+    plt.show()
+    
+    # # Plot input errors
+    # plt.figure()
+    # plt.plot(t_cmd, v_errors, color='midnightblue')
+    # plt.axhline(y=np.mean(v_errors), color='r', linestyle='-')
+    # plt.axhline(y=0, color='k', linestyle='--')
+    # plt.xlabel("Time [s]")
+    # plt.ylabel("Velocity Error [m/s]")
+    # plt.title(f"Linear Velocity Input Error, Run {run}, Path {P}")
+    # plt.grid()
+    # plt.savefig(f"linear_input_error_R{run}_P{P}.pdf")
+    # plt.show()
+    
+    plt.figure()
+    plt.hist(v_errors, bins=30, color='midnightblue')
+    plt.xlabel("Velocity Error [m/s]")
+    plt.ylabel("Frequency")
+    plt.title(f"Linear Velocity Input Error, Run {run}, Path {P}")
+    plt.grid()
+    plt.savefig(f"linear_input_error_R{run}_P{P}.pdf")
+    plt.show()
+    
+    # plt.figure()
+    # plt.plot(t_cmd, w_errors, color='darkblue')
+    # plt.axhline(y=np.mean(w_errors), color='r', linestyle='-')
+    # plt.axhline(y=0, color='k', linestyle='--')
+    # plt.xlabel("Time [s]")
+    # plt.ylabel("Velocity Error [rad/s]")
+    # plt.title(f"Angular Velocity Input Error, Run {run}, Path {P}")
+    # plt.grid()
+    # plt.savefig(f"angular_input_error_R{run}_P{P}.pdf")
+    # plt.show()
+    
+    plt.figure()
+    plt.hist(w_errors, bins=30, color='darkblue')
+    plt.xlabel("Velocity Error [rad/s]")
+    plt.ylabel("Frequency")
+    plt.title(f"Angular Velocity Input Error, Run {run}, Path {P}")
+    plt.grid()
+    plt.savefig(f"angular_input_error_R{run}_P{P}.pdf")
     plt.show()

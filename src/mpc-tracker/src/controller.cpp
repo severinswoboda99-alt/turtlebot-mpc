@@ -178,7 +178,7 @@ public:
     // Dynamic Reconfigue
     this->declare_parameter<bool>("start", false);
     this->declare_parameter<double>("delta_t", 0.1);  // time step size, in s
-    this->declare_parameter<int>("N", 30);            // Horizon size
+    this->declare_parameter<int>("N", 20);            // Horizon size
     this->declare_parameter<double>("q_1", 1.0);
     this->declare_parameter<double>("q_2", 1.0);
     this->declare_parameter<double>("q_3", 1.0);

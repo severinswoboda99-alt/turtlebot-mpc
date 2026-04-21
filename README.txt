@@ -16,7 +16,7 @@ Data is visualized with rosbag2 and matplotlib.
 * Install OSQP, according to their website.
 
 ### Launch ###
-From sourced terminal:
+$ source /opt/ros/jazzy/setup.bash && source install/setup.bash
 $ ros2 launch mpc-tracker launch.py
 
 ### Record and Plot ###
@@ -29,4 +29,4 @@ Update bag path in evaluation.py, then:
 $ cd /home/swo/turtlebot-mpc/src/mpc-tracker/evaluation 
 $ python3 evaluation.py
 Or, respectively
-$ python3 summary_plots
+$ python3 summary_plots.py
