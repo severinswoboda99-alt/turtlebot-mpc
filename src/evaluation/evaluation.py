@@ -141,7 +141,7 @@ def compute_control_effort(v, w):
 plt.rcParams['font.size'] = '12'
 
 if __name__ == "__main__":
-    bag_path = "/home/swo/turtlebot-mpc/src/mpc-tracker/rosbag2/WM Run 1 bag/bag_type_path3_N20_Q1_1_1_P1_1_1_R1_1"  # rosbag2 folder
+    bag_path = "/home/swo/turtlebot-mpc/src/mpc-tracker/rosbag2/WM Run 4 bag/bag_type_path3_N20_Q30_30_15_R0c5_0c05"  # rosbag2 folder
     planned = read_bag(bag_path, "/path", "nav_msgs/msg/Path")
     traveled = read_bag(bag_path, "/traveled_path", "nav_msgs/msg/Path")
     loop_time = read_bag(bag_path, "/loop_time", "std_msgs/msg/Float64")
@@ -159,20 +159,20 @@ if __name__ == "__main__":
     # Naming Parameters
     P = 3
     N = 20
-    run = 1
+    run = 4
     print(f"Run Number: {run}")
     
-    # Computing Time per Loop
-    filtered = t_l_values[t_l_values < np.percentile(t_l_values, 99)]
-    avg_time = np.mean(filtered)
-    std_time = np.std(filtered)
-    max_time = np.max(filtered)
-    min_time = np.min(filtered)
+    # # Computing Time per Loop
+    # filtered = t_l_values[t_l_values < np.percentile(t_l_values, 99)]
+    # avg_time = np.mean(filtered)
+    # std_time = np.std(filtered)
+    # max_time = np.max(filtered)
+    # min_time = np.min(filtered)
 
-    print(f"Average solve time: {avg_time:.3f} ms")
-    print(f"Std dev: {std_time:.3f} ms")
-    print(f"Min: {min_time:.3f} ms")
-    print(f"Max: {max_time:.3f} ms")
+    # print(f"Average solve time: {avg_time:.3f} ms")
+    # print(f"Std dev: {std_time:.3f} ms")
+    # print(f"Min: {min_time:.3f} ms")
+    # print(f"Max: {max_time:.3f} ms")
 
     # Position Error
     pos_errors = compute_pos_error(px, py, tx, ty)
@@ -209,9 +209,9 @@ if __name__ == "__main__":
     print(f"Max: {np.max(v_errors):.3f} m/s")
     
     w_errors = np.abs(w_ref_interp - w_cmd)
-    print(f"Average angular input error: {np.mean(w_errors):.3f} m/s")
-    print(f"Std dev: {np.std(w_errors):.3f} m/s")
-    print(f"Max: {np.max(w_errors):.3f} m/s")
+    print(f"Average angular input error: {np.mean(w_errors):.3f} rad/s")
+    print(f"Std dev: {np.std(w_errors):.3f} rad/s")
+    print(f"Max: {np.max(w_errors):.3f} rad/s")
     
     # Control Effort
     dv, dw = compute_control_effort(v_cmd, w_cmd)
@@ -219,13 +219,13 @@ if __name__ == "__main__":
     dv_abs = np.abs(dv)
     dw_abs = np.abs(dw)
 
-    print(f"Average Δv: {np.mean(dv):.3f} m/s")
-    print(f"Std dev: {np.std(dv):.3f} m/s")
-    print(f"Max: {np.max(dv):.3f} m/s")
+    print(f"Average Δv: {np.mean(dv_abs):.3f} m/s")
+    print(f"Std dev: {np.std(dv_abs):.3f} m/s")
+    print(f"Max: {np.max(dv_abs):.3f} m/s")
 
-    print(f"Average Δw: {np.mean(dw):.3f} rad/s")
-    print(f"Std dev: {np.std(dw):.3f} rad/s")
-    print(f"Max: {np.max(dw):.3f} rad/s")
+    print(f"Average Δw: {np.mean(dw_abs):.3f} rad/s")
+    print(f"Std dev: {np.std(dw_abs):.3f} rad/s")
+    print(f"Max: {np.max(dw_abs):.3f} rad/s")
 
     # Plot planned path
     # Spline Points
@@ -324,8 +324,8 @@ if __name__ == "__main__":
     
     # # Plot control effort
     # plt.figure()
-    # plt.plot(t_cmd[1:], dv, color='darkslateblue')
-    # plt.axhline(y=np.mean(dv), color='r', linestyle='-')
+    # plt.plot(t_cmd[1:], dv_abs, color='darkslateblue')
+    # plt.axhline(y=np.mean(dv_abs), color='r', linestyle='-')
     # plt.axhline(y=0, color='k', linestyle='--')
     # plt.xlabel("Time [s]")
     # plt.ylabel("Control Effort [m/s]")
@@ -335,7 +335,7 @@ if __name__ == "__main__":
     # plt.show()
     
     plt.figure()
-    plt.hist(dv, bins=30, color='darkslateblue')
+    plt.hist(dv_abs, bins=30, color='darkslateblue')
     plt.xlabel("Control Effort [m/s]")
     plt.ylabel("Frequency")
     plt.title(f"Linear Control Effort, Run {run}, Path {P}")
@@ -344,8 +344,8 @@ if __name__ == "__main__":
     plt.show()
     
     # plt.figure()
-    # plt.plot(t_cmd[1:], dw, color='mediumslateblue')
-    # plt.axhline(y=np.mean(dw), color='r', linestyle='-')
+    # plt.plot(t_cmd[1:], dw_abs, color='mediumslateblue')
+    # plt.axhline(y=np.mean(dw_abs), color='r', linestyle='-')
     # plt.axhline(y=0, color='k', linestyle='--')
     # plt.xlabel("Time [s]")
     # plt.ylabel("Control Effort [rad/s]")
@@ -355,7 +355,7 @@ if __name__ == "__main__":
     # plt.show()
     
     plt.figure()
-    plt.hist(dw, bins=30, color='mediumslateblue')
+    plt.hist(dw_abs, bins=30, color='mediumslateblue')
     plt.xlabel("Control Effort [rad/s]")
     plt.ylabel("Frequency")
     plt.title(f"Angular Control Effort, Run {run}, Path {P}")

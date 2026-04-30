@@ -12,8 +12,12 @@ It is GNU GENERAL PUBLIC license, no part of it was modified.
 
 Data is visualized with rosbag2 and matplotlib.
 
-### Prerequisites ###
-* Install OSQP, according to their website.
+The evaluation and path tracking with the real hardware is done through the detection of ArUco markers through an Intel RealSense D435I camera. 
+To achieve this, an ArUco marker is positioned on top of the robot, and the camera is recording the robot from a top down perspective. 
+This data is then converted by the package.
+Therefore, it depends on the "ROS Wrapper for RealSense(TM) Cameras" (https://github.com/realsenseai/realsense-ros) to convert the camera data to a ROS2 topic,
+and the ArUco marker package to detect the markers and convert it into positional data (https://github.com/namo-robotics/aruco_markers).
+To work with ROS2 Jazzy, the later has been slightly altered.
 
 ### Launch ###
 $ source /opt/ros/jazzy/setup.bash && source install/setup.bash
@@ -21,12 +25,28 @@ $ ros2 launch mpc-tracker launch.py
 
 ### Record and Plot ###
 $ cd /home/swo/turtlebot-mpc/src/mpc-tracker/rosbag2
-$ ros2 bag record -o bag_type_path0_N15_Q1_1_1_P1_1_1_R1_1 /path /traveled_path /loop_time /cmd_vel /v_ref /w_ref
+$ ros2 bag record -o bag_type_path1_N20_Q10_10_5_R0c1_0c05 /path /traveled_path /loop_time /cmd_vel /v_ref /w_ref
 FILENAME syntax: bag_type_pathX_Nn_Qq1_q2_q3_Pp1_p2_p3_Rr1_r2
 
 Stop recording with CTRL+C
 Update bag path in evaluation.py, then:
-$ cd /home/swo/turtlebot-mpc/src/mpc-tracker/evaluation 
+$ cd /home/swo/turtlebot-mpc/src/evaluation 
 $ python3 evaluation.py
 Or, respectively
 $ python3 summary_plots.py
+
+Start camera, detect ArUco markers from video data, and convert them to a path:
+$ ros2 run realsense2_camera realsense2_camera_node
+$ ros2 run aruco_markers aruco_markers --ros-args \
+  -p marker_size:=0.18 \
+  -p camera_frame:=camera_rgb_optical_frame \
+  -p image_topic:=/camera/camera/color/image_raw \
+  -p camera_info_topic:=/camera/camera/color/camera_info \
+  -p dictionary:=DICT_4X4_50
+$ cd /home/swo/turtlebot-mpc/src/mpc-tracker/rosbag2
+$ ros2 bag record -o real_pathX_bagX /aruco/markers
+
+### Embedded Hardware ###
+$ ros2 param list /node_name
+$ ros2 param get /node_name parameter_name
+$ ros2 param set /node_name parameter_name value
