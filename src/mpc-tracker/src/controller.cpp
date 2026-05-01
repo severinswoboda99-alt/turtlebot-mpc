@@ -207,6 +207,9 @@ public:
     state_received = false;
     solver_initialized = false;
     delta_X_0 = Eigen::Vector3d::Zero();
+    v_last = 0.0;
+    w_last = 0.0;
+    acc_cycles = 0;
 
     // Tuning Parameters
     rebuild_cost_matrices();
@@ -472,6 +475,19 @@ public:
       double w_cmd = w_local[0] + delta_U[1];
       v_cmd = std::clamp(v_cmd, -0.22, 0.22);
       w_cmd = std::clamp(w_cmd, -2.84, 2.84);
+
+      // Additional real-world clamp for initial acceleration
+      if(acc_cycles < 3) {
+        const double max_delta_v = 0.02;  // m/s per loop
+        v_cmd = std::clamp(v_cmd, v_last - max_delta_v, v_last + max_delta_v);
+        v_last = v_cmd;
+
+        const double max_delta_w = 0.4;   // rad/s per loop
+        w_cmd = std::clamp(w_cmd, w_last - max_delta_w, w_last + max_delta_w);
+        w_last = w_cmd;
+
+        ++acc_cycles;
+      }
       
       // Publish to /cmd_vel
       auto message = geometry_msgs::msg::TwistStamped();
@@ -522,6 +538,10 @@ private:
     OsqpEigen::Solver solver;
     bool solver_initialized;
     Eigen::SparseMatrix<double> A_sparse;
+
+    // Hardware Safety
+    double v_last, w_last;
+    int acc_cycles;
 
     // Dynamic Reconfigure
     rcl_interfaces::msg::SetParametersResult

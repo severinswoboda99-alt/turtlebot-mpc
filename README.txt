@@ -19,6 +19,8 @@ Therefore, it depends on the "ROS Wrapper for RealSense(TM) Cameras" (https://gi
 and the ArUco marker package to detect the markers and convert it into positional data (https://github.com/namo-robotics/aruco_markers).
 To work with ROS2 Jazzy, the later has been slightly altered.
 
+Since most of the workflow is done through WSL, the camera needs to be shared, following this tutorial: https://learn.microsoft.com/en-us/windows/wsl/connect-usb
+
 ### Launch ###
 $ source /opt/ros/jazzy/setup.bash && source install/setup.bash
 $ ros2 launch mpc-tracker launch.py
@@ -36,7 +38,8 @@ Or, respectively
 $ python3 summary_plots.py
 
 Start camera, detect ArUco markers from video data, and convert them to a path:
-$ ros2 run realsense2_camera realsense2_camera_node
+$ ros2 run realsense2_camera realsense2_camera_node --ros-args \
+  -p rgb_camera.color_profile:=1280x720x30
 $ ros2 run aruco_markers aruco_markers --ros-args \
   -p marker_size:=0.18 \
   -p camera_frame:=camera_rgb_optical_frame \
@@ -46,7 +49,5 @@ $ ros2 run aruco_markers aruco_markers --ros-args \
 $ cd /home/swo/turtlebot-mpc/src/mpc-tracker/rosbag2
 $ ros2 bag record -o real_pathX_bagX /aruco/markers
 
-### Embedded Hardware ###
-$ ros2 param list /node_name
-$ ros2 param get /node_name parameter_name
-$ ros2 param set /node_name parameter_name value
+$ cd /home/swo/turtlebot-mpc/src/evaluation 
+$ python3 evaluation.py
