@@ -39,7 +39,7 @@ $ python3 summary_plots.py
 
 Start camera, detect ArUco markers from video data, and convert them to a path:
 $ ros2 run realsense2_camera realsense2_camera_node --ros-args \
-  -p rgb_camera.color_profile:=1280x720x30
+  -p rgb_camera.color_profile:=1920x1080x30
 $ ros2 run aruco_markers aruco_markers --ros-args \
   -p marker_size:=0.18 \
   -p camera_frame:=camera_rgb_optical_frame \

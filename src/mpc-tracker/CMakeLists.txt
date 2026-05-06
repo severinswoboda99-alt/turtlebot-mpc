@@ -17,6 +17,7 @@ find_package(OsqpEigen REQUIRED)
 
 add_executable(controller src/controller.cpp)
 ament_target_dependencies(controller std_msgs rclcpp nav_msgs geometry_msgs Eigen3)
+target_compile_definitions(controller PRIVATE OSQP_EIGEN_OSQP_IS_V1 OSQP_EIGEN_OSQP_IS_V1_FINAL)
 target_link_libraries(controller osqp::osqp)
 target_link_libraries(controller OsqpEigen::OsqpEigen)
 

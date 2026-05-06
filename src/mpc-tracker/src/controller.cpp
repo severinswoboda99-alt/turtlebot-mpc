@@ -178,15 +178,15 @@ public:
     // Dynamic Reconfigue
     this->declare_parameter<bool>("start", false);
     this->declare_parameter<double>("delta_t", 0.1);  // time step size, in s
-    this->declare_parameter<int>("N", 20);            // Horizon size
-    this->declare_parameter<double>("q_1", 30.0);
-    this->declare_parameter<double>("q_2", 30.0);
-    this->declare_parameter<double>("q_3", 15.0);
-    this->declare_parameter<double>("p_1", 50.0);
-    this->declare_parameter<double>("p_2", 50.0);
-    this->declare_parameter<double>("p_3", 25.0);
-    this->declare_parameter<double>("r_1", 0.5);
-    this->declare_parameter<double>("r_2", 0.05);
+    this->declare_parameter<int>("N", 10);            // Horizon size
+    this->declare_parameter<double>("q_1", 1.0);
+    this->declare_parameter<double>("q_2", 1.0);
+    this->declare_parameter<double>("q_3", 1.0);
+    this->declare_parameter<double>("p_1", 1.0);
+    this->declare_parameter<double>("p_2", 1.0);
+    this->declare_parameter<double>("p_3", 1.0);
+    this->declare_parameter<double>("r_1", 1.0);
+    this->declare_parameter<double>("r_2", 1.0);
 
     start = this->get_parameter("start").as_bool();
     delta_t = this->get_parameter("delta_t").as_double();

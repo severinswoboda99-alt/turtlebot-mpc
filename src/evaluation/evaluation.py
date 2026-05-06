@@ -198,15 +198,15 @@ def filter_outliers(x, y, yaw, max_jump=0.15):
 plt.rcParams['font.size'] = '12'
 
 if __name__ == "__main__":
-    bag_path = "/home/swo/turtlebot-mpc/src/mpc-tracker/rosbag2/bag_type_path0_N15_Q1_1_1_P1_1_1_R1_1"  # rosbag2 folder
-    bag_path_camera = "/home/swo/turtlebot-mpc/src/mpc-tracker/rosbag2/real_pathX_bagX"
+    bag_path = "/home/swo/turtlebot-mpc/src/mpc-tracker/rosbag2/Horizon Size bag/bag_horizon_path3_N40_Q1_1_1_R1_1"  # rosbag2 folder
+    # bag_path_camera = "/home/swo/turtlebot-mpc/src/mpc-tracker/rosbag2/real_pathX_bagX"
     planned = read_bag(bag_path, "/path", "nav_msgs/msg/Path")
     traveled = read_bag(bag_path, "/traveled_path", "nav_msgs/msg/Path")
     loop_time = read_bag(bag_path, "/loop_time", "std_msgs/msg/Float64")
     cmd_vel = read_bag(bag_path, "/cmd_vel", "geometry_msgs/msg/TwistStamped")
     v_ref = read_bag(bag_path, "/v_ref", "std_msgs/msg/Float64")
     w_ref = read_bag(bag_path, "/w_ref", "std_msgs/msg/Float64")
-    aruco__poses = read_bag(bag_path_camera, "/aruco/markers", "aruco_markers_msgs/msg/MarkerArray")
+    # aruco__poses = read_bag(bag_path_camera, "/aruco/markers", "aruco_markers_msgs/msg/MarkerArray")
     
     px, py, pyaw = extract_planned(planned)
     tx, ty, tyaw = extract_traveled(traveled)
@@ -214,25 +214,27 @@ if __name__ == "__main__":
     t_v_ref, vs_ref = extract_float64(v_ref)
     t_w_ref, ws_ref = extract_float64(w_ref)
     t_cmd, v_cmd, w_cmd = extract_cmd_vel(cmd_vel)
-    ta, xa, ya, yawa = extract_aruco_poses(aruco__poses)
+    # ta, xa, ya, yawa = extract_aruco_poses(aruco__poses)
     
-    # # Naming Parameters
-    # P = 3
-    # N = 20
+    # Naming Parameters
+    P = 3
+    N = 40
     # run = 4
     # print(f"Run Number: {run}")
+    print(f"Path Number: {P}")
+    print(f"Horizon N: {N}")
     
-    # # # Computing Time per Loop
-    # # filtered = t_l_values[t_l_values < np.percentile(t_l_values, 99)]
-    # # avg_time = np.mean(filtered)
-    # # std_time = np.std(filtered)
-    # # max_time = np.max(filtered)
-    # # min_time = np.min(filtered)
+    # Computing Time per Loop
+    filtered = t_l_values[t_l_values < np.percentile(t_l_values, 99)]
+    avg_time = np.mean(filtered)
+    std_time = np.std(filtered)
+    max_time = np.max(filtered)
+    min_time = np.min(filtered)
 
-    # # print(f"Average solve time: {avg_time:.3f} ms")
-    # # print(f"Std dev: {std_time:.3f} ms")
-    # # print(f"Min: {min_time:.3f} ms")
-    # # print(f"Max: {max_time:.3f} ms")
+    print(f"Average solve time: {avg_time:.3f} ms")
+    print(f"Std dev: {std_time:.3f} ms")
+    print(f"Min: {min_time:.3f} ms")
+    print(f"Max: {max_time:.3f} ms")
 
     # # Position Error
     # pos_errors = compute_pos_error(px, py, tx, ty)
@@ -287,11 +289,12 @@ if __name__ == "__main__":
     # print(f"Std dev: {np.std(dw_abs):.3f} rad/s")
     # print(f"Max: {np.max(dw_abs):.3f} rad/s")
     
-    # Aruco Transform
-    xa_n, ya_n, yawa_n = normalize_trajectory(xa, ya, yawa)
-    xa_f, ya_f, yawa_f = filter_outliers(xa_n, ya_n, yawa_n)
-    xa_s = savgol_filter(xa_f, window_length=11, polyorder=2)
-    ya_s = savgol_filter(ya_f, window_length=11, polyorder=2)
+    # # Aruco Transform
+    # xa_n, ya_n, yawa_n = normalize_trajectory(xa, ya, yawa)
+    # xa_f, ya_f, yawa_f = filter_outliers(xa_n, ya_n, yawa_n)
+    # xa_s = savgol_filter(xa_f, window_length=11, polyorder=2)
+    # ya_s = savgol_filter(ya_f, window_length=11, polyorder=2)
+
 
     # # Plot planned path
     # # Spline Points
@@ -470,16 +473,16 @@ if __name__ == "__main__":
     # plt.savefig(f"angular_input_error_R{run}_P{P}.pdf")
     # plt.show()
     
-    # Aruco trajectory comparison
-    plt.figure()
-    plt.plot(px, py, linestyle='--', label='Planned Path', color='b')
-    plt.plot(tx, ty, label='Robot Trajectory', color='crimson')
-    plt.plot(-ya_s, -xa_s, label='ArUco Trajectory', color='darkorange')
-    plt.xlabel("X [m]")
-    plt.ylabel("Y [m]")
-    plt.legend()
-    plt.axis('equal')
-    plt.title(f"test")
-    plt.grid(linewidth = 0.5)
-    plt.savefig(f"test.pdf")
-    plt.show()
+    # # Aruco trajectory comparison
+    # plt.figure()
+    # plt.plot(px, py, linestyle='--', label='Planned Path', color='b')
+    # plt.plot(tx, ty, label='Robot Trajectory', color='crimson')
+    # plt.plot(-ya_s, -xa_s, label='ArUco Trajectory', color='darkorange')
+    # plt.xlabel("X [m]")
+    # plt.ylabel("Y [m]")
+    # plt.legend()
+    # plt.axis('equal')
+    # plt.title(f"test")
+    # plt.grid(linewidth = 0.5)
+    # plt.savefig(f"test.pdf")
+    # plt.show()
