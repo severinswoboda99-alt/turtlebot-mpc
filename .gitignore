@@ -7,7 +7,16 @@ log/
 *.pyc
 __pycache__/
 src/mpc-tracker/rosbag2/
-src/evaluation/
+src/evaluation/summary_calc.py
+src/evaluation/summary_plots.py
+src/evaluation/Horizon Size Computing Time
+src/evaluation/Path Planner
+src/evaluation/Real Comp
+src/evaluation/WM Run 1
+src/evaluation/WM Run 2
+src/evaluation/WM Run 3
+src/evaluation/WM Run 4
+src/evaluation/WM Summary
 
 # ===============================
 # Generated config files
